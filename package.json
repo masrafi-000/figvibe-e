@@ -16,16 +16,16 @@
   "private": true,
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@prisma/cli-engine": "0.2.3",
     "@types/bun": "latest",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.4.1",
+    "@types/pg": "^8.23.1",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.6",
-    "prisma": "^8.0.0-rc.10",
+    "prisma": "7.10.0",
     "tsx": "^4.23.13",
     "typescript-eslint": "^8.69.0"
   },
@@ -33,13 +33,14 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@prisma/client": "^7.10.0",
-    "@prisma/orm-postgres": "^8.0.0-rc.8",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "7.10.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "helmet": "^8.3.0",
+    "pg": "^8.23.0",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
     "zod": "^4.5.4"

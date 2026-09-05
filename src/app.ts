@@ -7,6 +7,7 @@ import { logger } from "./config/logger";
 import { errorMiddleware } from "./middleware/error.middleware";
 import { notFoundMiddleware } from "./middleware/not_found.middleware";
 import { apiRouter } from "./routes";
+import { container } from "./container/container";
 
 const app = express();
 
@@ -28,12 +29,7 @@ app.use(
   }),
 );
 
-app.get("/health", (_req: Request, res: Response) => {
-  res.status(200).json({
-    success: true,
-    message: "Server is Healthy",
-  });
-});
+app.use('/health', container.healthRouter.router);
 
 app.use("api/v1", apiRouter);
 
