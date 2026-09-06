@@ -1,0 +1,78 @@
+enum UserRole {
+    CUSTOMER
+    ADMIN
+    SUPER_ADMIN
+}
+
+enum UserStats {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+    DELETED
+}
+
+enum ProductStatus {
+    DRAFT
+    ACTIVE
+    INACTIVE
+    ARCHIVED
+}
+
+enum InventoryTransactionType {
+    PURCHASE
+    SALE
+    RETURN
+    RESTOCK
+    DAMAGE
+    ADJUSTMENT
+    RESERVED
+    RELEASED
+}
+
+enum OrderStatus {
+    PENDING
+    CONFIRMED
+    PROCESSING
+    PACKED
+    SHIPPED
+    DELIVERED
+    CANCELLED
+    RETURNED
+    REFUNDED
+}
+
+enum PaymentMethod {
+    COD 
+    STRIPE
+    BKASH
+    NAGOD
+    SSL_COMMERZ
+}
+
+enum PaymentStatus {
+    PENDING
+    PROCESSING
+    PAID
+    FAILED
+    CANCELLED
+    REFUNDED
+    PARTIALLY_REFUNDED
+}
+
+enum AddressType {
+    HOME
+    OFFICE
+    OTHER
+}
+
+enum DiscountType {
+    PERCENTAGE
+    FIXED
+}
+
+enum DiscountStatus {
+    ACTIVE
+    INACTIVE
+    EXPIRED
+}
+
