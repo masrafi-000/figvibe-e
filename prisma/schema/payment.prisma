@@ -1,0 +1,53 @@
+model Payment {
+  id String @id @default(cuid())
+
+  method PaymentMethod
+  status PaymentStatus @default(PENDING)
+
+  amount Decimal @db.Decimal(12, 2)
+
+  transactionId String?
+  provider      String?
+
+  paidAt DateTime?
+
+  metadata Json?
+
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([transactionId])
+  @@map("payments")
+}
+
+model Discount {
+  id String @id @default(cuid())
+
+  code String @unique
+
+  type  DiscountType
+  value Decimal      @db.Decimal(12, 2)
+
+  minOrderAmount Decimal? @db.Decimal(12, 2)
+  maxDiscount    Decimal? @db.Decimal(12, 2)
+
+  usageLimit Int?
+  usageCount Int  @default(0)
+
+  startAt   DateTime
+  expiresAt DateTime?
+
+  status DiscountStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([startAt])
+  @@index([expiresAt])
+  @@map("discounts")
+}

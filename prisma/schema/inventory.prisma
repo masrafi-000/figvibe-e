@@ -1,0 +1,40 @@
+model Inventory {
+  id String @id @default(cuid())
+
+  quantity Int @default(0)
+  reserved Int @default(0)
+
+  lowStockThreshold Int @default(5)
+
+  variantId String         @unique
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  transactions InventoryTransaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("inventories")
+}
+
+model InventoryTransaction {
+  id String @id @default(cuid())
+
+  type     InventoryTransactionType
+  quantity Int
+
+  referenceId   String?
+  referenceType String?
+  note          String?
+
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([inventoryId])
+  @@index([type])
+  @@index([referenceId])
+  @@index([createdAt])
+  @@map("inventory_transactions")
+}

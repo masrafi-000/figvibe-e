@@ -1,49 +1,54 @@
-
-model User { 
-  id    String @id @default(cuid())
-  name  String
-  email String  @unique
+model User {
+  id           String  @id @default(cuid())
+  name         String
+  email        String  @unique
+  passwordHash String?
+  avatarUrl    String?
 
   phone String? @unique
 
-  role UserRole @default(CUSTOMER)
+  role   UserRole   @default(CUSTOMER)
   status UserStatus @default(ACTIVE)
 
   emailVerifiedAt DateTime?
-  lastLoginAt DateTime?
+  lastLoginAt     DateTime?
+
+  address  Address[]
+  orders   Order[]
+  cart     Cart?
+  wishlist Wishlist?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  address Address[]
-} 
-
+  @@map("users")
+}
 
 model Address {
   id String @id @default(cuid())
 
   type AddressType @default(HOME)
 
+  recipientName  String?
+  recipientPhone String?
+
   addressLine1 String
   addressLine2 String?
-  city String
-  district String
-  postalCode String
-  country String @default("Bangladesh")
+  city         String
+  district     String
+  postalCode   String
+  country      String  @default("Bangladesh")
 
   isDefault Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relation with user
   userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Relation with order
-  // orders  Order[]
-  
-@@index([userId])
-@@map("addresses")
+  orders Order[]
+
+  @@index([userId])
+  @@map("addresses")
 }
-

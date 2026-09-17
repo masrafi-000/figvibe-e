@@ -18,12 +18,102 @@ export { Prisma }
 export * as $Enums from './enums.ts'
 export * from './enums.ts';
 /**
+ * Model Cart
+ * 
+ */
+export type Cart = Prisma.CartModel
+/**
+ * Model CartItem
+ * 
+ */
+export type CartItem = Prisma.CartItemModel
+/**
+ * Model Category
+ * 
+ */
+export type Category = Prisma.CategoryModel
+/**
+ * Model Brand
+ * 
+ */
+export type Brand = Prisma.BrandModel
+/**
+ * Model Fabric
+ * 
+ */
+export type Fabric = Prisma.FabricModel
+/**
+ * Model Inventory
+ * 
+ */
+export type Inventory = Prisma.InventoryModel
+/**
+ * Model InventoryTransaction
+ * 
+ */
+export type InventoryTransaction = Prisma.InventoryTransactionModel
+/**
+ * Model Order
+ * 
+ */
+export type Order = Prisma.OrderModel
+/**
+ * Model OrderItem
+ * 
+ */
+export type OrderItem = Prisma.OrderItemModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model Discount
+ * 
+ */
+export type Discount = Prisma.DiscountModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model ProductVariant
+ * 
+ */
+export type ProductVariant = Prisma.ProductVariantModel
+/**
+ * Model Size
+ * 
+ */
+export type Size = Prisma.SizeModel
+/**
+ * Model Color
+ * 
+ */
+export type Color = Prisma.ColorModel
+/**
+ * Model ProductImage
+ * 
+ */
+export type ProductImage = Prisma.ProductImageModel
+/**
  * Model User
  * 
  */
 export type User = Prisma.UserModel
 /**
- * Model Post
+ * Model Address
  * 
  */
-export type Post = Prisma.PostModel
+export type Address = Prisma.AddressModel
+/**
+ * Model Wishlist
+ * 
+ */
+export type Wishlist = Prisma.WishlistModel
+/**
+ * Model WishlistItem
+ * 
+ */
+export type WishlistItem = Prisma.WishlistItemModel

@@ -9,7 +9,109 @@
 * 🟢 You can import this file directly.
 */
 
+export const UserRole = {
+  CUSTOMER: 'CUSTOMER',
+  ADMIN: 'ADMIN',
+  SUPER_ADMIN: 'SUPER_ADMIN'
+} as const
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const UserStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  DELETED: 'DELETED'
+} as const
+
+export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const ProductStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus]
+
+
+export const InventoryTransactionType = {
+  PURCHASE: 'PURCHASE',
+  SALE: 'SALE',
+  RETURN: 'RETURN',
+  RESTOCK: 'RESTOCK',
+  DAMAGE: 'DAMAGE',
+  ADJUSTMENT: 'ADJUSTMENT',
+  RESERVED: 'RESERVED',
+  RELEASED: 'RELEASED'
+} as const
+
+export type InventoryTransactionType = (typeof InventoryTransactionType)[keyof typeof InventoryTransactionType]
+
+
+export const OrderStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  PROCESSING: 'PROCESSING',
+  PACKED: 'PACKED',
+  SHIPPED: 'SHIPPED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED',
+  RETURNED: 'RETURNED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+
+export const PaymentMethod = {
+  COD: 'COD',
+  STRIPE: 'STRIPE',
+  BKASH: 'BKASH',
+  NAGAD: 'NAGAD',
+  SSL_COMMERZ: 'SSL_COMMERZ'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const PaymentStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+  PARTIALLY_REFUNDED: 'PARTIALLY_REFUNDED'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const AddressType = {
+  HOME: 'HOME',
+  OFFICE: 'OFFICE',
+  OTHER: 'OTHER'
+} as const
+
+export type AddressType = (typeof AddressType)[keyof typeof AddressType]
+
+
+export const DiscountType = {
+  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED'
+} as const
+
+export type DiscountType = (typeof DiscountType)[keyof typeof DiscountType]
+
+
+export const DiscountStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type DiscountStatus = (typeof DiscountStatus)[keyof typeof DiscountStatus]
