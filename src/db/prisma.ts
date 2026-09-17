@@ -1,10 +1,8 @@
 import { PrismaPg } from '@prisma/adapter-pg';
-
-
 import { env } from '../config/env';
 import { logger } from '../config/logger';
 import { PrismaClient, Prisma } from '../generated/prisma/client';
-import type { LogEvent } from 'pino';
+
 
 export class Database {
   private readonly prisma: PrismaClient;

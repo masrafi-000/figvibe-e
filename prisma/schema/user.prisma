@@ -7,9 +7,9 @@ model User {
   phone String? @unique
 
   role UserRole @default(CUSTOMER)
-  status UserStats @default(ACTIVE)
+  status UserStatus @default(ACTIVE)
 
-  emailverifiedAt DateTime?
+  emailVerifiedAt DateTime?
   lastLoginAt DateTime?
 
   createdAt DateTime @default(now())

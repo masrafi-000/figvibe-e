@@ -5,12 +5,16 @@ import { database } from './db';
 
 const startServer = async (): Promise<void> => {
   try {
-    logger.info('Starting application...');
+    logger.info('Starting Application...');
 
     await database.connect();
 
     const server = app.listen(env.PORT, () => {
-      logger.info(`Server running on port ${env.PORT}`);
+      logger.info(`Server Running on Port ${env.PORT}`);
+
+      logger.info(`API Docs: http://localhost:${env.PORT}/docs`);
+
+      logger.info(`OpenAPI: http://localhost:${env.PORT}/openapi.json`);
     });
 
     const shutdown = async (signal: string) => {

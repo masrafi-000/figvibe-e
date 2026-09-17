@@ -1,0 +1,52 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Figvibe API",
+    "version": "1.0.0",
+    "description": "Figvibe E-commerce REST API"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "API Version 1"
+    },
+    {
+      "url": "/",
+      "description": "Root (Health Check)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "Auth",
+      "description": "Authentication endpoints"
+    },
+    {
+      "name": "Category",
+      "description": "Category management"
+    },
+    {
+      "name": "Brand",
+      "description": "Brand management"
+    },
+    {
+      "name": "Fabric",
+      "description": "Fabric management"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {},
+    "parameters": {}
+  },
+  "paths": {}
+}
