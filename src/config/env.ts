@@ -12,7 +12,13 @@ const envSchema = z.object({
 
   DATABASE_URL: z.string().min(1),
 
+  REDIS_URL: z.string().min(1),
+
   CORS_ORIGIN: z.string().url(),
+
+  SALT_ROUNDS : z.coerce.number().int().positive().default(20),
+
+
 });
 
 const parsed = envSchema.safeParse(process.env);

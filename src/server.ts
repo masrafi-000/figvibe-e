@@ -1,4 +1,5 @@
 import app from './app';
+import { redis_database } from './common/redis';
 import { env } from './config/env';
 import { logger } from './config/logger';
 import { database } from './db';
@@ -8,6 +9,7 @@ const startServer = async (): Promise<void> => {
     logger.info('Starting Application...');
 
     await database.connect();
+    await redis_database.connect()
 
     const server = app.listen(env.PORT, () => {
       logger.info(`Server Running on Port ${env.PORT}`);
@@ -24,22 +26,16 @@ const startServer = async (): Promise<void> => {
         if (server) {
           await new Promise<void>((resolve, reject) => {
             server?.close((error) => {
-              if (error) {
-                reject(error);
-                return;
-              }
-
-              resolve();
+              error ? reject(error) : resolve()
             });
           });
-
           logger.info('Http server closed');
         }
 
         await database.disconnect();
+        await redis_database.disconnect();
 
         logger.info('Graceful shutdown completed');
-
         process.exit(0);
       } catch (error) {
         logger.fatal({ error }, 'Graceful shutdown failed');

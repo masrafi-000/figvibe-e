@@ -28,6 +28,17 @@ export const UserStatus = {
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 
+export const AuthProvider = {
+  GOOGLE: 'GOOGLE',
+  GITHUB: 'GITHUB',
+  DISCORD: 'DISCORD',
+  APPLE: 'APPLE',
+  PASSWORD: 'PASSWORD'
+} as const
+
+export type AuthProvider = (typeof AuthProvider)[keyof typeof AuthProvider]
+
+
 export const ProductStatus = {
   DRAFT: 'DRAFT',
   ACTIVE: 'ACTIVE',

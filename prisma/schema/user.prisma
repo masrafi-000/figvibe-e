@@ -1,28 +1,115 @@
 model User {
   id           String  @id @default(cuid())
-  name         String
-  email        String  @unique
-  passwordHash String?
-  avatarUrl    String?
 
-  phone String? @unique
+  email        String  @unique
+  emailVerified DateTime?
+
+  passwordHash String?
+
+  firstName String?
+  lastName String?
+  username String? @unique
+  avatarUrl String?
+
+  phone     String? @unique
 
   role   UserRole   @default(CUSTOMER)
   status UserStatus @default(ACTIVE)
 
-  emailVerifiedAt DateTime?
-  lastLoginAt     DateTime?
+
+  accounts Account[]
+  sessions AuthSession[]
 
   address  Address[]
   orders   Order[]
   cart     Cart?
   wishlist Wishlist?
+  passwordResetTokens PasswordResetToken[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  lastLoginAt     DateTime?
+
+  @@map("users")
+}
+
+model Account {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  provider          AuthProvider
+  providerAccountId String
+
+  refreshToken String?   @db.Text
+  accessToken  String?   @db.Text
+  tokenExpiresAt    DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("users")
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
 }
+
+model AuthSession {
+  id        String @id @default(cuid())
+
+  sessionToken String @unique
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  userAgent String?
+  ipAddress String?
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+
+model EmailVerificationToken {
+  id         String   @id @default(cuid())
+
+  email      String
+  tokenHash  String   @unique
+
+  expiresAt  DateTime
+  usedAt     DateTime?
+
+  createdAt  DateTime @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id String @id @default(cuid())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String @unique
+  
+  expiresAt DateTime
+  usedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+
+
 
 model Address {
   id String @id @default(cuid())

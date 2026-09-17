@@ -1,28 +1,24 @@
 import type { Request, Response } from 'express';
 import { Database } from '../../db/prisma';
+import type { RedisDatabase } from '../../common/redis';
 
 export class HealthController {
-  constructor(private readonly database: Database) {}
+  constructor(private readonly database: Database, private readonly redis: RedisDatabase) {}
 
   health = async (_req: Request, res: Response) => {
-    const databaseHealthy = await this.database.healthCheck();
+    const [databaseHealthy, redisHealthy] = await Promise.all([
+      this.database.healthCheck(),
+      this.redis.healthCheck(),
+    ]);
 
-    if (!databaseHealthy) {
-      res.status(503).json({
-        success: false,
-        status: 'unhealthy',
-        services: {
-          database: 'unhealthy',
-        },
-      });
-      return;
-    }
+    const isHealthy = databaseHealthy && redisHealthy;
 
-    res.status(200).json({
-      success: true,
-      status: 'healthy',
+    res.status(isHealthy ? 200 : 503).json({
+      success: isHealthy,
+      status: isHealthy ? 'healthy' : 'unhealthy',
       services: {
-        database: 'healthy',
+        database: databaseHealthy ? 'healthy' : 'unhealthy',
+        redis: redisHealthy ? 'healthy' : 'unhealthy',
       },
     });
   };
