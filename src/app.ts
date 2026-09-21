@@ -10,6 +10,11 @@ import { container } from './container/container';
 import { errorMiddleware } from './middleware/error.middleware';
 import { notFoundMiddleware } from './middleware/not_found.middleware';
 import { apiRouter } from './routes';
+import session from 'express-session';
+import { RedisStore } from 'connect-redis';
+import { env } from './config/env';
+import passport from './config/passport';
+import { redis } from './common/redis';
 
 const app = express();
 
@@ -39,6 +44,30 @@ app.use(
     },
   }),
 );
+
+app.set("trust proxy", 1);
+
+app.use(session({
+  store: new RedisStore({
+    client: redis,
+    prefix: "session"
+  }),
+
+  secret: env.SESSION_SECRET!,
+
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    sameSite: env.NODE_ENV === "production" ? "lax" : "lax",
+
+    maxAge: 1000 * 60 * 60* 24 *7
+  }
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use('/health', container.healthRouter.router);
 

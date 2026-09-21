@@ -75,7 +75,6 @@ model AuthSession {
   @@map("refresh_tokens")
 }
 
-
 model EmailVerificationToken {
   id         String   @id @default(cuid())
 
@@ -107,9 +106,6 @@ model PasswordResetToken {
   @@index([userId])
   @@index([expiresAt])
 }
-
-
-
 
 model Address {
   id String @id @default(cuid())
