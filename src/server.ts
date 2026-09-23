@@ -26,7 +26,8 @@ const startServer = async (): Promise<void> => {
         if (server) {
           await new Promise<void>((resolve, reject) => {
             server?.close((error) => {
-              error ? reject(error) : resolve()
+              if (error) reject(error);
+              else resolve();
             });
           });
           logger.info('Http server closed');
