@@ -16,7 +16,7 @@ const envSchema = z.object({
 
   CORS_ORIGIN: z.string().url(),
 
-  SALT_ROUNDS : z.coerce.number().int().positive().default(20),
+  SALT_ROUNDS: z.coerce.number().int().positive().default(10),
 
   // Session
   SESSION_SECRET: z.string().min(1).default("super_secret_key_do_not_share_and_make_more_secure"),

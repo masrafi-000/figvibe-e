@@ -5,6 +5,9 @@ import {
 } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
+import { registerAuthDocs } from '../modules/auth/auth.docs';
+import { registerHealthDocs } from '../modules/health/health.docs';
+
 extendZodWithOpenApi(z);
 
 export const registry = new OpenAPIRegistry();
@@ -15,7 +18,17 @@ registry.registerComponent('securitySchemes', 'bearerAuth', {
   bearerFormat: 'JWT',
 });
 
+let docsInitialized = false;
+
+const initDocs = () => {
+  if (docsInitialized) return;
+  registerHealthDocs(registry);
+  registerAuthDocs(registry);
+  docsInitialized = true;
+};
+
 export const generateOpenAPIDocument = () => {
+  initDocs();
   const generator = new OpenApiGeneratorV3(registry.definitions);
 
   return generator.generateDocument({
@@ -27,8 +40,7 @@ export const generateOpenAPIDocument = () => {
     },
 
     servers: [
-      { url: '/api/v1', description: 'API Version 1' },
-      { url: '/', description: 'Root (Health Check)' },
+      { url: '/', description: 'Current Server' },
     ],
     tags: [
       { name: 'Health', description: 'Health check endpoints' },

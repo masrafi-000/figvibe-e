@@ -29,7 +29,7 @@ export class RedisDatabase {
     });
 
     this.redis.on('error', (error) => {
-      logger.error({ error }, 'Redis client error');
+      logger.error({ err: error }, 'Redis client error');
     });
 
     this.redis.on('close', () => {
@@ -48,10 +48,26 @@ export class RedisDatabase {
 
   async connect(): Promise<void> {
     try {
-      await this.redis.connect();
-      logger.info('Redis client successfully connected');
+      if (this.redis.status === 'ready') {
+        logger.info('Redis client successfully connected');
+        return;
+      }
+
+      if (this.redis.status === 'connecting' || this.redis.status === 'connect') {
+        await new Promise<void>((resolve, reject) => {
+          this.redis.once('ready', () => resolve());
+          this.redis.once('error', (err) => reject(err));
+        });
+        logger.info('Redis client successfully connected');
+        return;
+      }
+
+      if (this.redis.status === 'wait') {
+        await this.redis.connect();
+        logger.info('Redis client successfully connected');
+      }
     } catch (error) {
-      logger.error({ error }, 'Redis connection failed');
+      logger.error({ err: error }, 'Redis connection failed');
       throw error;
     }
   }
@@ -59,10 +75,12 @@ export class RedisDatabase {
 
   async disconnect(): Promise<void> {
     try {
-      await this.redis.quit();
-      logger.info('Redis disconnected successfully');
+      if (this.redis.status !== 'end' && this.redis.status !== 'close') {
+        await this.redis.quit();
+        logger.info('Redis disconnected successfully');
+      }
     } catch (error) {
-      logger.error({ error }, 'Failed to disconnect from Redis');
+      logger.error({ err: error }, 'Failed to disconnect from Redis');
       throw error;
     }
   }

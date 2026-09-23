@@ -38,7 +38,7 @@ const startServer = async (): Promise<void> => {
         logger.info('Graceful shutdown completed');
         process.exit(0);
       } catch (error) {
-        logger.fatal({ error }, 'Graceful shutdown failed');
+        logger.fatal({ err: error }, 'Graceful shutdown failed');
 
         process.exit(1);
       }
@@ -52,7 +52,7 @@ const startServer = async (): Promise<void> => {
       void shutdown('SIGINT');
     });
   } catch (error) {
-    logger.fatal({ error }, 'Failed to start server');
+    logger.fatal({ err: error }, 'Failed to start server');
     process.exit(1);
   }
 };
