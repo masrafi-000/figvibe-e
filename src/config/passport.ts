@@ -4,7 +4,7 @@ import { prisma } from '../db';
 import '../modules/auth/strategies/local.strategy';
 import '../modules/auth/strategies/google.strategy';
 
-passport.serializeUser((user: any, done) => {
+passport.serializeUser((user: Express.User, done) => {
   done(null, user.id);
 });
 

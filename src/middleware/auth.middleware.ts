@@ -6,7 +6,9 @@ import {
   type TokenPayload,
 } from '../common/utils/jwt';
 
+// Ensure the global Express namespace has User type
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface User extends Partial<TokenPayload> {
       id?: string;

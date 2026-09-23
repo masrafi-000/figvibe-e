@@ -21,7 +21,7 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CALLBACK_URL)
 
           const providerAccountId = profile.id;
 
-          let account = await prisma.account.findUnique({
+          const account = await prisma.account.findUnique({
             where: {
               provider_providerAccountId: {
                 provider: 'GOOGLE',
