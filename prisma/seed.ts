@@ -12,9 +12,15 @@ const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 const ROLES = [
-  { name: 'SUPER_ADMIN', description: 'Full system access with all permissions' },
+  {
+    name: 'SUPER_ADMIN',
+    description: 'Full system access with all permissions',
+  },
   { name: 'ADMIN', description: 'Store, catalog, and inventory manager' },
-  { name: 'SALESMAN', description: 'POS operator, sales creator, and customer manager' },
+  {
+    name: 'SALESMAN',
+    description: 'POS operator, sales creator, and customer manager',
+  },
   { name: 'CUSTOMER', description: 'Regular registered customer' },
 ];
 
@@ -57,25 +63,61 @@ const PERMISSIONS = [
   { resource: 'sale', action: 'delete', description: 'Void or delete sale' },
 
   // Customer Management
-  { resource: 'customer', action: 'read', description: 'View customer records' },
-  { resource: 'customer', action: 'create', description: 'Create customer profile' },
-  { resource: 'customer', action: 'update', description: 'Update customer details' },
-  { resource: 'customer', action: 'delete', description: 'Delete customer records' },
+  {
+    resource: 'customer',
+    action: 'read',
+    description: 'View customer records',
+  },
+  {
+    resource: 'customer',
+    action: 'create',
+    description: 'Create customer profile',
+  },
+  {
+    resource: 'customer',
+    action: 'update',
+    description: 'Update customer details',
+  },
+  {
+    resource: 'customer',
+    action: 'delete',
+    description: 'Delete customer records',
+  },
 
   // Inventory Management
   { resource: 'inventory', action: 'read', description: 'View stock levels' },
-  { resource: 'inventory', action: 'update', description: 'Update stock levels' },
-  { resource: 'inventory', action: 'adjust', description: 'Perform stock adjustments' },
+  {
+    resource: 'inventory',
+    action: 'update',
+    description: 'Update stock levels',
+  },
+  {
+    resource: 'inventory',
+    action: 'adjust',
+    description: 'Perform stock adjustments',
+  },
 
   // User & Staff Management
   { resource: 'user', action: 'read', description: 'View user and staff list' },
   { resource: 'user', action: 'create', description: 'Create staff accounts' },
-  { resource: 'user', action: 'update', description: 'Update user profiles and roles' },
+  {
+    resource: 'user',
+    action: 'update',
+    description: 'Update user profiles and roles',
+  },
   { resource: 'user', action: 'delete', description: 'Delete user accounts' },
 
   // Role & Permissions
-  { resource: 'role', action: 'read', description: 'View roles and permissions' },
-  { resource: 'role', action: 'update', description: 'Assign permissions to roles' },
+  {
+    resource: 'role',
+    action: 'read',
+    description: 'View roles and permissions',
+  },
+  {
+    resource: 'role',
+    action: 'update',
+    description: 'Assign permissions to roles',
+  },
 ];
 
 const ROLE_PERMISSIONS_MAP: Record<string, string[]> = {
@@ -104,15 +146,41 @@ const ROLE_PERMISSIONS_MAP: Record<string, string[]> = {
     'inventory:read',
   ],
   ADMIN: [
-    'product:read', 'product:create', 'product:update', 'product:delete',
-    'category:read', 'category:create', 'category:update', 'category:delete',
-    'brand:read', 'brand:create', 'brand:update', 'brand:delete',
-    'fabric:read', 'fabric:create', 'fabric:update', 'fabric:delete',
-    'order:read', 'order:create', 'order:update', 'order:cancel', 'order:delete',
-    'sale:read', 'sale:create', 'sale:update', 'sale:delete',
-    'customer:read', 'customer:create', 'customer:update', 'customer:delete',
-    'inventory:read', 'inventory:update', 'inventory:adjust',
-    'user:read', 'user:create', 'user:update',
+    'product:read',
+    'product:create',
+    'product:update',
+    'product:delete',
+    'category:read',
+    'category:create',
+    'category:update',
+    'category:delete',
+    'brand:read',
+    'brand:create',
+    'brand:update',
+    'brand:delete',
+    'fabric:read',
+    'fabric:create',
+    'fabric:update',
+    'fabric:delete',
+    'order:read',
+    'order:create',
+    'order:update',
+    'order:cancel',
+    'order:delete',
+    'sale:read',
+    'sale:create',
+    'sale:update',
+    'sale:delete',
+    'customer:read',
+    'customer:create',
+    'customer:update',
+    'customer:delete',
+    'inventory:read',
+    'inventory:update',
+    'inventory:adjust',
+    'user:read',
+    'user:create',
+    'user:update',
     'role:read',
   ],
   SUPER_ADMIN: PERMISSIONS.map((p) => `${p.resource}:${p.action}`),
@@ -208,8 +276,12 @@ async function main() {
     },
   });
 
-  console.log(`👤 Super Admin ready: ${superAdmin.email} (ID: ${superAdmin.id})`);
-  console.log('✅ Database seeded successfully with Roles, Permissions, and Super Admin!');
+  console.log(
+    `👤 Super Admin ready: ${superAdmin.email} (ID: ${superAdmin.id})`,
+  );
+  console.log(
+    '✅ Database seeded successfully with Roles, Permissions, and Super Admin!',
+  );
 }
 
 main()

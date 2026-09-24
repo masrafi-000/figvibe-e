@@ -3,7 +3,11 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { env } from '../../../config/env';
 import { prisma } from '../../../db';
 
-if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CALLBACK_URL) {
+if (
+  env.GOOGLE_CLIENT_ID &&
+  env.GOOGLE_CLIENT_SECRET &&
+  env.GOOGLE_CALLBACK_URL
+) {
   passport.use(
     new GoogleStrategy(
       {
@@ -57,7 +61,9 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CALLBACK_URL)
               where: { name: 'CUSTOMER' },
             });
             if (!defaultRole) {
-              return done(new Error('Default CUSTOMER role not found in database'));
+              return done(
+                new Error('Default CUSTOMER role not found in database'),
+              );
             }
 
             user = await prisma.user.create({

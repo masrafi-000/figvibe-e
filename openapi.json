@@ -89,11 +89,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "email",
-          "role"
-        ]
+        "required": ["id", "email", "role"]
       },
       "AuthDataResponse": {
         "type": "object",
@@ -111,9 +107,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "user"
-        ]
+        "required": ["user"]
       },
       "AuthResponse": {
         "type": "object",
@@ -128,11 +122,7 @@
             "$ref": "#/components/schemas/AuthDataResponse"
           }
         },
-        "required": [
-          "success",
-          "message",
-          "data"
-        ]
+        "required": ["success", "message", "data"]
       },
       "PermissionResponse": {
         "type": "object",
@@ -154,11 +144,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "resource",
-          "action"
-        ]
+        "required": ["id", "resource", "action"]
       },
       "RoleResponse": {
         "type": "object",
@@ -192,10 +178,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "name"
-        ]
+        "required": ["id", "name"]
       },
       "SafeUserResponse": {
         "type": "object",
@@ -232,12 +215,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "ACTIVE",
-              "INACTIVE",
-              "SUSPENDED",
-              "DELETED"
-            ]
+            "enum": ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"]
           },
           "roleId": {
             "type": "string"
@@ -256,10 +234,7 @@
                 "nullable": true
               }
             },
-            "required": [
-              "id",
-              "name"
-            ]
+            "required": ["id", "name"]
           },
           "createdAt": {
             "type": "string"
@@ -304,12 +279,7 @@
                 "type": "number"
               }
             },
-            "required": [
-              "page",
-              "limit",
-              "total",
-              "totalPage"
-            ]
+            "required": ["page", "limit", "total", "totalPage"]
           },
           "data": {
             "type": "array",
@@ -318,11 +288,7 @@
             }
           }
         },
-        "required": [
-          "success",
-          "meta",
-          "data"
-        ]
+        "required": ["success", "meta", "data"]
       }
     },
     "parameters": {}
@@ -330,9 +296,7 @@
   "paths": {
     "/health": {
       "get": {
-        "tags": [
-          "Health"
-        ],
+        "tags": ["Health"],
         "summary": "Health check endpoint",
         "responses": {
           "200": {
@@ -374,9 +338,7 @@
     },
     "/api/v1/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Register a new user",
         "requestBody": {
           "content": {
@@ -408,10 +370,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "email",
-                  "password"
-                ]
+                "required": ["email", "password"]
               }
             }
           }
@@ -438,9 +397,7 @@
     },
     "/api/v1/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Log in with email and password",
         "requestBody": {
           "content": {
@@ -457,10 +414,7 @@
                     "minLength": 1
                   }
                 },
-                "required": [
-                  "email",
-                  "password"
-                ]
+                "required": ["email", "password"]
               }
             }
           }
@@ -484,9 +438,7 @@
     },
     "/api/v1/auth/google": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Initiate Google OAuth authentication",
         "responses": {
           "302": {
@@ -497,9 +449,7 @@
     },
     "/api/v1/auth/google/callback": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Google OAuth callback handler",
         "responses": {
           "302": {
@@ -510,9 +460,7 @@
     },
     "/api/v1/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Refresh access token via cookie or request body",
         "requestBody": {
           "content": {
@@ -547,9 +495,7 @@
     },
     "/api/v1/auth/logout": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Log out current session and revoke tokens",
         "requestBody": {
           "content": {
@@ -580,10 +526,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ]
+                  "required": ["success", "message"]
                 }
               }
             }
@@ -593,9 +536,7 @@
     },
     "/api/v1/auth/me": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Get currently authenticated user profile",
         "security": [
           {
@@ -620,15 +561,10 @@
                           "$ref": "#/components/schemas/UserResponse"
                         }
                       },
-                      "required": [
-                        "user"
-                      ]
+                      "required": ["user"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "data"
-                  ]
+                  "required": ["success", "data"]
                 }
               }
             }
@@ -641,9 +577,7 @@
     },
     "/api/v1/auth/token": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Get Bearer access token for current session",
         "security": [
           {
@@ -665,10 +599,7 @@
                       "$ref": "#/components/schemas/AuthDataResponse"
                     }
                   },
-                  "required": [
-                    "success",
-                    "data"
-                  ]
+                  "required": ["success", "data"]
                 }
               }
             }
@@ -681,9 +612,7 @@
     },
     "/api/v1/users/roles": {
       "get": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Get all user roles with permission counts",
         "security": [
           {
@@ -711,15 +640,10 @@
                           }
                         }
                       },
-                      "required": [
-                        "roles"
-                      ]
+                      "required": ["roles"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "data"
-                  ]
+                  "required": ["success", "data"]
                 }
               }
             }
@@ -733,9 +657,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Create a new role with optional initial permissions",
         "security": [
           {
@@ -765,9 +687,7 @@
                     }
                   }
                 },
-                "required": [
-                  "name"
-                ]
+                "required": ["name"]
               }
             }
           }
@@ -793,16 +713,10 @@
                           "$ref": "#/components/schemas/RoleResponse"
                         }
                       },
-                      "required": [
-                        "role"
-                      ]
+                      "required": ["role"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -818,9 +732,7 @@
     },
     "/api/v1/users/roles/{id}": {
       "get": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Get role details by ID",
         "security": [
           {
@@ -855,15 +767,10 @@
                           "$ref": "#/components/schemas/RoleResponse"
                         }
                       },
-                      "required": [
-                        "role"
-                      ]
+                      "required": ["role"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "data"
-                  ]
+                  "required": ["success", "data"]
                 }
               }
             }
@@ -874,9 +781,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Update role name or description",
         "security": [
           {
@@ -934,16 +839,10 @@
                           "$ref": "#/components/schemas/RoleResponse"
                         }
                       },
-                      "required": [
-                        "role"
-                      ]
+                      "required": ["role"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -957,9 +856,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Delete a custom role",
         "security": [
           {
@@ -991,10 +888,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ]
+                  "required": ["success", "message"]
                 }
               }
             }
@@ -1010,9 +904,7 @@
     },
     "/api/v1/users/roles/{id}/permissions": {
       "put": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Assign or sync permissions to a role (replaces existing)",
         "security": [
           {
@@ -1043,9 +935,7 @@
                     }
                   }
                 },
-                "required": [
-                  "permissionIds"
-                ]
+                "required": ["permissionIds"]
               }
             }
           }
@@ -1071,16 +961,10 @@
                           "$ref": "#/components/schemas/RoleResponse"
                         }
                       },
-                      "required": [
-                        "role"
-                      ]
+                      "required": ["role"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1094,9 +978,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Roles"
-        ],
+        "tags": ["Roles"],
         "summary": "Remove specific permissions from a role",
         "security": [
           {
@@ -1127,9 +1009,7 @@
                     }
                   }
                 },
-                "required": [
-                  "permissionIds"
-                ]
+                "required": ["permissionIds"]
               }
             }
           }
@@ -1155,16 +1035,10 @@
                           "$ref": "#/components/schemas/RoleResponse"
                         }
                       },
-                      "required": [
-                        "role"
-                      ]
+                      "required": ["role"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1177,9 +1051,7 @@
     },
     "/api/v1/users/permissions": {
       "get": {
-        "tags": [
-          "Permissions"
-        ],
+        "tags": ["Permissions"],
         "summary": "Get all available system permissions",
         "security": [
           {
@@ -1207,15 +1079,10 @@
                           }
                         }
                       },
-                      "required": [
-                        "permissions"
-                      ]
+                      "required": ["permissions"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "data"
-                  ]
+                  "required": ["success", "data"]
                 }
               }
             }
@@ -1223,9 +1090,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Permissions"
-        ],
+        "tags": ["Permissions"],
         "summary": "Create a new permission resource:action",
         "security": [
           {
@@ -1251,10 +1116,7 @@
                     "maxLength": 255
                   }
                 },
-                "required": [
-                  "resource",
-                  "action"
-                ]
+                "required": ["resource", "action"]
               }
             }
           }
@@ -1280,16 +1142,10 @@
                           "$ref": "#/components/schemas/PermissionResponse"
                         }
                       },
-                      "required": [
-                        "permission"
-                      ]
+                      "required": ["permission"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1302,9 +1158,7 @@
     },
     "/api/v1/users/permissions/{id}": {
       "delete": {
-        "tags": [
-          "Permissions"
-        ],
+        "tags": ["Permissions"],
         "summary": "Delete a permission",
         "security": [
           {
@@ -1336,10 +1190,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ]
+                  "required": ["success", "message"]
                 }
               }
             }
@@ -1352,9 +1203,7 @@
     },
     "/api/v1/users": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Search and paginate all users",
         "security": [
           {
@@ -1389,12 +1238,7 @@
           {
             "schema": {
               "type": "string",
-              "enum": [
-                "ACTIVE",
-                "INACTIVE",
-                "SUSPENDED",
-                "DELETED"
-              ]
+              "enum": ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"]
             },
             "required": false,
             "name": "status",
@@ -1425,9 +1269,7 @@
     },
     "/api/v1/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get user details by ID",
         "security": [
           {
@@ -1462,15 +1304,10 @@
                           "$ref": "#/components/schemas/SafeUserResponse"
                         }
                       },
-                      "required": [
-                        "user"
-                      ]
+                      "required": ["user"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "data"
-                  ]
+                  "required": ["success", "data"]
                 }
               }
             }
@@ -1481,9 +1318,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Permanently delete a user account from database",
         "security": [
           {
@@ -1515,10 +1350,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "success",
-                    "message"
-                  ]
+                  "required": ["success", "message"]
                 }
               }
             }
@@ -1534,9 +1366,7 @@
     },
     "/api/v1/users/{id}/role": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Assign a role to a user",
         "security": [
           {
@@ -1564,9 +1394,7 @@
                     "minLength": 1
                   }
                 },
-                "required": [
-                  "roleId"
-                ]
+                "required": ["roleId"]
               }
             }
           }
@@ -1592,16 +1420,10 @@
                           "$ref": "#/components/schemas/SafeUserResponse"
                         }
                       },
-                      "required": [
-                        "user"
-                      ]
+                      "required": ["user"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1614,9 +1436,7 @@
     },
     "/api/v1/users/{id}/reset-role": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Reset user role to default CUSTOMER role",
         "security": [
           {
@@ -1654,16 +1474,10 @@
                           "$ref": "#/components/schemas/SafeUserResponse"
                         }
                       },
-                      "required": [
-                        "user"
-                      ]
+                      "required": ["user"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1676,9 +1490,7 @@
     },
     "/api/v1/users/{id}/suspend": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Suspend a user account and revoke all login sessions",
         "security": [
           {
@@ -1716,16 +1528,10 @@
                           "$ref": "#/components/schemas/SafeUserResponse"
                         }
                       },
-                      "required": [
-                        "user"
-                      ]
+                      "required": ["user"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1741,9 +1547,7 @@
     },
     "/api/v1/users/{id}/unsuspend": {
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Reactivate a suspended user account",
         "security": [
           {
@@ -1781,16 +1585,10 @@
                           "$ref": "#/components/schemas/SafeUserResponse"
                         }
                       },
-                      "required": [
-                        "user"
-                      ]
+                      "required": ["user"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1803,9 +1601,7 @@
     },
     "/api/v1/users/{id}/soft": {
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Soft delete a user account",
         "security": [
           {
@@ -1843,16 +1639,10 @@
                           "$ref": "#/components/schemas/SafeUserResponse"
                         }
                       },
-                      "required": [
-                        "user"
-                      ]
+                      "required": ["user"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }
@@ -1868,9 +1658,7 @@
     },
     "/api/v1/users/{id}/revoke-sessions": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Revoke all active login sessions for a user",
         "security": [
           {
@@ -1908,16 +1696,10 @@
                           "type": "number"
                         }
                       },
-                      "required": [
-                        "revokedCount"
-                      ]
+                      "required": ["revokedCount"]
                     }
                   },
-                  "required": [
-                    "success",
-                    "message",
-                    "data"
-                  ]
+                  "required": ["success", "message", "data"]
                 }
               }
             }

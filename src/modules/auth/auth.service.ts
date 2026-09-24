@@ -7,7 +7,7 @@ import {
 } from '../../common/utils/jwt';
 import { compare_password, hash_password } from '../../common/utils/password';
 import type { Database } from '../../db/prisma';
-import type {  ZCTLogin, ZCTRegister } from './auth.schema';
+import type { ZCTLogin, ZCTRegister } from './auth.schema';
 
 interface ClientMetadata {
   userAgent?: string;
@@ -151,13 +151,19 @@ export class AuthService {
       throw new AppError('Invalid email or password', 401);
     }
 
-    const isPasswordValid = await compare_password(input.password, user.passwordHash);
+    const isPasswordValid = await compare_password(
+      input.password,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
       throw new AppError('Invalid email or password', 401);
     }
 
     if (user.status !== 'ACTIVE') {
-      throw new AppError('Your account is not active. Please contact support.', 403);
+      throw new AppError(
+        'Your account is not active. Please contact support.',
+        403,
+      );
     }
 
     const payload: TokenPayload = {
@@ -249,7 +255,10 @@ export class AuthService {
     });
 
     if (!session || session.isRevoked || session.expiresAt < new Date()) {
-      throw new AppError('Session has expired or was revoked. Please log in again.', 401);
+      throw new AppError(
+        'Session has expired or was revoked. Please log in again.',
+        401,
+      );
     }
 
     // Invalidate old refresh token session

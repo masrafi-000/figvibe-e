@@ -240,7 +240,10 @@ export const registerUserDocs = (registry: OpenAPIRegistry): void => {
           },
         },
       },
-      400: { description: 'Cannot delete core system roles or roles with assigned users' },
+      400: {
+        description:
+          'Cannot delete core system roles or roles with assigned users',
+      },
       404: { description: 'Role not found' },
     },
   });
@@ -429,7 +432,9 @@ export const registerUserDocs = (registry: OpenAPIRegistry): void => {
         page: z.number().optional(),
         limit: z.number().optional(),
         search: z.string().optional(),
-        status: z.enum(['ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED']).optional(),
+        status: z
+          .enum(['ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED'])
+          .optional(),
         role: z.string().optional(),
       }),
     },

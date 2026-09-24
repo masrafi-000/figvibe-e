@@ -102,10 +102,14 @@ export class AuthController {
   ): Promise<void> => {
     try {
       const refreshToken =
-        req.cookies?.[REFRESH_COOKIE_NAME] || (req.body?.refreshToken as string | undefined);
+        req.cookies?.[REFRESH_COOKIE_NAME] ||
+        (req.body?.refreshToken as string | undefined);
 
       if (!refreshToken) {
-        throw new AppError('Refresh token not provided in cookies or request body', 401);
+        throw new AppError(
+          'Refresh token not provided in cookies or request body',
+          401,
+        );
       }
 
       const result = await this.authService.refreshTokens(refreshToken, {
@@ -137,7 +141,8 @@ export class AuthController {
   ): Promise<void> => {
     try {
       const refreshToken =
-        req.cookies?.[REFRESH_COOKIE_NAME] || (req.body?.refreshToken as string | undefined);
+        req.cookies?.[REFRESH_COOKIE_NAME] ||
+        (req.body?.refreshToken as string | undefined);
 
       await this.authService.logout(refreshToken);
 

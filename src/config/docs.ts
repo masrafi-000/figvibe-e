@@ -42,14 +42,21 @@ export const generateOpenAPIDocument = () => {
       description: 'Figvibe E-commerce & Staff Management REST API',
     },
 
-    servers: [
-      { url: '/', description: 'Current Server' },
-    ],
+    servers: [{ url: '/', description: 'Current Server' }],
     tags: [
       { name: 'Health', description: 'Server and database health status' },
-      { name: 'Auth', description: 'Registration, login, OAuth, sessions, and tokens' },
-      { name: 'Users', description: 'User account management, status, and role assignments' },
-      { name: 'Roles', description: 'Role creation, updating, and permission mapping' },
+      {
+        name: 'Auth',
+        description: 'Registration, login, OAuth, sessions, and tokens',
+      },
+      {
+        name: 'Users',
+        description: 'User account management, status, and role assignments',
+      },
+      {
+        name: 'Roles',
+        description: 'Role creation, updating, and permission mapping',
+      },
       { name: 'Permissions', description: 'System permission definitions' },
     ],
   });

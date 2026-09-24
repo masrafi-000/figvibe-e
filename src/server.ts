@@ -9,7 +9,7 @@ const startServer = async (): Promise<void> => {
     logger.info('Starting Application...');
 
     await database.connect();
-    await redis_database.connect()
+    await redis_database.connect();
 
     const server = app.listen(env.PORT, () => {
       logger.info(`Server Running on Port ${env.PORT}`);
@@ -26,7 +26,7 @@ const startServer = async (): Promise<void> => {
         if (server) {
           await new Promise<void>((resolve, reject) => {
             server?.close((error) => {
-              error ? reject(error) : resolve()
+              error ? reject(error) : resolve();
             });
           });
           logger.info('Http server closed');

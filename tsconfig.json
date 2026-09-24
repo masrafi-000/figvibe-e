@@ -11,10 +11,7 @@
 
     "jsx": "react-jsx",
     "allowJs": true,
-    "types": [
-      "bun",
-      "node"
-    ],
+    "types": ["bun", "node"],
 
     // Bundler mode
     "moduleResolution": "bundler",

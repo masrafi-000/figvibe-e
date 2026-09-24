@@ -387,8 +387,14 @@ export class UserService {
     if (payload.name) {
       const normalizedName = payload.name.trim().toUpperCase();
 
-      if (SYSTEM_ROLES.includes(existingRole.name as any) && existingRole.name !== normalizedName) {
-        throw new AppError(`Cannot rename core system role '${existingRole.name}'`, 400);
+      if (
+        SYSTEM_ROLES.includes(existingRole.name as any) &&
+        existingRole.name !== normalizedName
+      ) {
+        throw new AppError(
+          `Cannot rename core system role '${existingRole.name}'`,
+          400,
+        );
       }
 
       if (normalizedName !== existingRole.name) {

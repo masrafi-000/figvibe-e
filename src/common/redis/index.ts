@@ -1,19 +1,18 @@
-import Redis from "ioredis";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
-
+import Redis from 'ioredis';
+import { env } from '../../config/env';
+import { logger } from '../../config/logger';
 
 export class RedisDatabase {
   private readonly redis: Redis;
 
-  constructor(){
+  constructor() {
     this.redis = new Redis(env.REDIS_URL, {
       lazyConnect: true,
       maxRetriesPerRequest: 3,
       retryStrategy: (times: number) => {
-        const delay = Math.min(times * 200, 2000)
+        const delay = Math.min(times * 200, 2000);
         return delay;
-      }
+      },
     });
 
     this.setupLogging();
@@ -22,7 +21,7 @@ export class RedisDatabase {
   private setupLogging(): void {
     this.redis.on('connect', () => {
       logger.debug(`Redis client initiating connection to ${env.REDIS_URL}`);
-    })
+    });
 
     this.redis.on('ready', () => {
       logger.debug('Redis client ready for commands');
@@ -45,7 +44,6 @@ export class RedisDatabase {
     return this.redis;
   }
 
-
   async connect(): Promise<void> {
     try {
       if (this.redis.status === 'ready') {
@@ -53,7 +51,10 @@ export class RedisDatabase {
         return;
       }
 
-      if (this.redis.status === 'connecting' || this.redis.status === 'connect') {
+      if (
+        this.redis.status === 'connecting' ||
+        this.redis.status === 'connect'
+      ) {
         await new Promise<void>((resolve, reject) => {
           this.redis.once('ready', () => resolve());
           this.redis.once('error', (err) => reject(err));
@@ -71,7 +72,6 @@ export class RedisDatabase {
       throw error;
     }
   }
-
 
   async disconnect(): Promise<void> {
     try {
@@ -92,7 +92,7 @@ export class RedisDatabase {
       logger.error({ error }, 'Redis health check failed');
       return false;
     }
-  }  
+  }
 }
 
 export const redis_database = new RedisDatabase();

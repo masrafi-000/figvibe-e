@@ -45,29 +45,31 @@ app.use(
   }),
 );
 
-app.set("trust proxy", 1);
+app.set('trust proxy', 1);
 
-app.use(session({
-  store: new RedisStore({
-    client: redis,
-    prefix: "session"
+app.use(
+  session({
+    store: new RedisStore({
+      client: redis,
+      prefix: 'session',
+    }),
+
+    secret: env.SESSION_SECRET!,
+
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: env.NODE_ENV === 'production',
+      sameSite: env.NODE_ENV === 'production' ? 'lax' : 'lax',
+
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
   }),
+);
 
-  secret: env.SESSION_SECRET!,
-
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: env.NODE_ENV === "production",
-    sameSite: env.NODE_ENV === "production" ? "lax" : "lax",
-
-    maxAge: 1000 * 60 * 60* 24 *7
-  }
-}))
-
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/health', container.healthRouter.router);
 

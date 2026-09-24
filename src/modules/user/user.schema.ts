@@ -27,16 +27,8 @@ export const ZCIUpdateUserRole = z.object({
 export type ZCTUpdateUserRole = z.infer<typeof ZCIUpdateUserRole>;
 
 export const ZCIPermission = z.object({
-  resource: z
-    .string()
-    .min(2, 'Resource is required')
-    .trim()
-    .toLowerCase(),
-  action: z
-    .string()
-    .min(2, 'Action is required')
-    .trim()
-    .toLowerCase(),
+  resource: z.string().min(2, 'Resource is required').trim().toLowerCase(),
+  action: z.string().min(2, 'Action is required').trim().toLowerCase(),
   description: z.string().max(255).optional(),
 });
 

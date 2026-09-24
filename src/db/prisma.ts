@@ -3,7 +3,6 @@ import { env } from '../config/env';
 import { logger } from '../config/logger';
 import { PrismaClient, Prisma } from '../generated/prisma/client';
 
-
 export class Database {
   private readonly prisma: PrismaClient;
 
@@ -30,10 +29,12 @@ export class Database {
   }
 
   private setupLogging(): void {
-    (this.prisma.$on as unknown as (
-      event: 'error',
-      callback: (event: Prisma.LogEvent) => void,
-    ) => void)('error', (event: Prisma.LogEvent) => {
+    (
+      this.prisma.$on as unknown as (
+        event: 'error',
+        callback: (event: Prisma.LogEvent) => void,
+      ) => void
+    )('error', (event: Prisma.LogEvent) => {
       logger.error(
         {
           target: event.target,
@@ -43,10 +44,12 @@ export class Database {
       );
     });
 
-    (this.prisma.$on as unknown as (
-      event: 'warn',
-      callback: (event: Prisma.LogEvent) => void,
-    ) => void)('warn', (event: Prisma.LogEvent) => {
+    (
+      this.prisma.$on as unknown as (
+        event: 'warn',
+        callback: (event: Prisma.LogEvent) => void,
+      ) => void
+    )('warn', (event: Prisma.LogEvent) => {
       logger.warn(
         {
           target: event.target,
@@ -67,10 +70,7 @@ export class Database {
 
       logger.info('Database connected successfully');
     } catch (error) {
-      logger.fatal(
-        { error },
-        'Failed to connect to database',
-      );
+      logger.fatal({ error }, 'Failed to connect to database');
 
       throw error;
     }
@@ -82,10 +82,7 @@ export class Database {
 
       logger.info('Database disconnected successfully');
     } catch (error) {
-      logger.error(
-        { error },
-        'Failed to disconnect from database',
-      );
+      logger.error({ error }, 'Failed to disconnect from database');
 
       throw error;
     }
@@ -96,10 +93,7 @@ export class Database {
       await this.prisma.$queryRaw`SELECT 1`;
       return true;
     } catch (error) {
-      logger.error(
-        { error },
-        'Database health check failed',
-      );
+      logger.error({ error }, 'Database health check failed');
 
       return false;
     }

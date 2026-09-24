@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { authenticate, requirePermission } from '../../middleware/auth.middleware';
+import {
+  authenticate,
+  requirePermission,
+} from '../../middleware/auth.middleware';
 import type { UserController } from './user.controller';
 
 export class UserRouter {
@@ -13,7 +16,7 @@ export class UserRouter {
   private initializeRoutes(): void {
     // All endpoints in this router require authentication
     this.router.use(authenticate);
-  
+
     // Role Routes (Must be declared before /:id)
     this.router.get(
       '/roles',

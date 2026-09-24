@@ -21,12 +21,12 @@ export class PermissionCacheService {
 
   /**
    * Get all permission assigned to a user.
-   * 
-   * Flow: 
+   *
+   * Flow:
    *  1. Try Redis first.
    *  2. If cache miss, load Permissions from PostgreSQL
-   *  3. Cache the result in Redis. 
-   * 
+   *  3. Cache the result in Redis.
+   *
    */
   async getUserPermissions(userId: string): Promise<Set<string>> {
     const cacheKey = this.getCacheKey(userId);
@@ -87,7 +87,7 @@ export class PermissionCacheService {
         permissions.push('*');
       }
 
-      /** 
+      /**
        * Convert database permissions to resource:action
        */
       for (const rolePermission of user.role.permission) {
@@ -135,12 +135,12 @@ export class PermissionCacheService {
 
   /**
    * Remove one user's permission cache.
-   * 
-   * Call this when: 
+   *
+   * Call this when:
    *  - User's role changes
    *  - User's permission are changed
    *  - User is deactivated/re-activated
-   * 
+   *
    */
 
   async invalidateUser(userId: string): Promise<void> {
