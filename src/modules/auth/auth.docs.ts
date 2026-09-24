@@ -1,11 +1,14 @@
-import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import {
+  extendZodWithOpenApi,
+  type OpenAPIRegistry,
+} from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
-import { loginSchema, registerSchema } from './auth.schema';
+import { ZCILogin, ZCIRegister } from './auth.schema';
 
 extendZodWithOpenApi(z);
 
 export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
-  const userResponseSchema = registry.register(
+  const ZCIUserResponse = registry.register(
     'UserResponse',
     z.object({
       id: z.string(),
@@ -17,18 +20,18 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
       role: z.string(),
       createdAt: z.string().optional(),
       updatedAt: z.string().optional(),
-    })
+    }),
   );
 
-  const authResponseSchema = registry.register(
+  const ZCIAuthResponse = registry.register(
     'AuthResponse',
     z.object({
       success: z.boolean(),
       message: z.string(),
       data: z.object({
-        user: userResponseSchema,
+        user: ZCIUserResponse,
       }),
-    })
+    }),
   );
 
   // Register
@@ -41,7 +44,7 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
       body: {
         content: {
           'application/json': {
-            schema: registerSchema,
+            schema: ZCIRegister,
           },
         },
       },
@@ -51,7 +54,7 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
         description: 'Account registered successfully',
         content: {
           'application/json': {
-            schema: authResponseSchema,
+            schema: ZCIAuthResponse,
           },
         },
       },
@@ -70,7 +73,7 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
       body: {
         content: {
           'application/json': {
-            schema: loginSchema,
+            schema: ZCILogin,
           },
         },
       },
@@ -80,7 +83,7 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
         description: 'Logged in successfully',
         content: {
           'application/json': {
-            schema: authResponseSchema,
+            schema: ZCIAuthResponse,
           },
         },
       },
@@ -121,7 +124,7 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
         description: 'Token refreshed successfully',
         content: {
           'application/json': {
-            schema: authResponseSchema,
+            schema: ZCIAuthResponse,
           },
         },
       },
@@ -165,7 +168,7 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
             schema: z.object({
               success: z.boolean(),
               data: z.object({
-                user: userResponseSchema,
+                user: ZCIUserResponse,
               }),
             }),
           },

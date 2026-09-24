@@ -53,17 +53,22 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CALLBACK_URL)
           });
 
           if (!user) {
+            const defaultRole = await prisma.role.findUnique({
+              where: { name: 'CUSTOMER' },
+            });
+            if (!defaultRole) {
+              return done(new Error('Default CUSTOMER role not found in database'));
+            }
+
             user = await prisma.user.create({
               data: {
                 email: email.toLowerCase(),
                 emailVerified: new Date(),
-
                 firstName: profile.name?.givenName,
                 lastName: profile.name?.familyName,
-
                 avatarUrl: profile.photos?.[0]?.value,
-
                 lastLoginAt: new Date(),
+                roleId: defaultRole.id,
               },
             });
           }

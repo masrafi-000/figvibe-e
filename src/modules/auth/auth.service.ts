@@ -7,7 +7,7 @@ import {
 } from '../../common/utils/jwt';
 import { compare_password, hash_password } from '../../common/utils/password';
 import type { Database } from '../../db/prisma';
-import type { LoginInput, RegisterInput } from './auth.schema';
+import type {  ZCTLogin, ZCTRegister } from './auth.schema';
 
 interface ClientMetadata {
   userAgent?: string;
@@ -35,13 +35,20 @@ export class AuthService {
     username: string | null;
     avatarUrl: string | null;
     phone: string | null;
-    role: string;
+    role?: { name: string } | string | null;
     status: string;
     emailVerified: Date | null;
     lastLoginAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
   }) {
+    let roleName = 'CUSTOMER';
+    if (typeof user.role === 'string') {
+      roleName = user.role;
+    } else if (user.role && typeof user.role === 'object') {
+      roleName = user.role.name;
+    }
+
     return {
       id: user.id,
       email: user.email,
@@ -50,7 +57,7 @@ export class AuthService {
       username: user.username,
       avatarUrl: user.avatarUrl,
       phone: user.phone,
-      role: user.role,
+      role: roleName,
       status: user.status,
       emailVerified: user.emailVerified,
       lastLoginAt: user.lastLoginAt,
@@ -59,7 +66,7 @@ export class AuthService {
     };
   }
 
-  async register(input: RegisterInput, metadata?: ClientMetadata) {
+  async register(input: ZCTRegister, metadata?: ClientMetadata) {
     const existingUser = await this.prisma.user.findUnique({
       where: { email: input.email.toLowerCase() },
     });
@@ -77,6 +84,18 @@ export class AuthService {
       }
     }
 
+    // Default role for new users is CUSTOMER
+    const defaultRole = await this.prisma.role.findUnique({
+      where: { name: 'CUSTOMER' },
+    });
+
+    if (!defaultRole) {
+      throw new AppError(
+        'Default CUSTOMER role not found. Please run database seed.',
+        500,
+      );
+    }
+
     const hashedPassword = await hash_password(input.password);
 
     const user = await this.prisma.user.create({
@@ -87,13 +106,17 @@ export class AuthService {
         lastName: input.lastName,
         username: input.username,
         phone: input.phone,
+        roleId: defaultRole.id,
+      },
+      include: {
+        role: true,
       },
     });
 
     const payload: TokenPayload = {
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role.name,
     };
 
     const accessToken = signAccessToken(payload);
@@ -116,9 +139,12 @@ export class AuthService {
     };
   }
 
-  async login(input: LoginInput, metadata?: ClientMetadata) {
+  async login(input: ZCTLogin, metadata?: ClientMetadata) {
     const user = await this.prisma.user.findUnique({
       where: { email: input.email.toLowerCase() },
+      include: {
+        role: true,
+      },
     });
 
     if (!user || !user.passwordHash) {
@@ -137,7 +163,7 @@ export class AuthService {
     const payload: TokenPayload = {
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role.name,
     };
 
     const accessToken = signAccessToken(payload);
@@ -168,6 +194,9 @@ export class AuthService {
   async handleOAuthLogin(userId: string, metadata?: ClientMetadata) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        role: true,
+      },
     });
 
     if (!user) {
@@ -177,7 +206,7 @@ export class AuthService {
     const payload: TokenPayload = {
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role.name,
     };
 
     const accessToken = signAccessToken(payload);
@@ -210,7 +239,13 @@ export class AuthService {
 
     const session = await this.prisma.authSession.findUnique({
       where: { sessionToken: refreshTokenStr },
-      include: { user: true },
+      include: {
+        user: {
+          include: {
+            role: true,
+          },
+        },
+      },
     });
 
     if (!session || session.isRevoked || session.expiresAt < new Date()) {
@@ -227,7 +262,7 @@ export class AuthService {
     const newPayload: TokenPayload = {
       userId: session.user.id,
       email: session.user.email,
-      role: session.user.role,
+      role: session.user.role.name,
     };
 
     const newAccessToken = signAccessToken(newPayload);
@@ -262,6 +297,9 @@ export class AuthService {
   async getCurrentUser(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        role: true,
+      },
     });
 
     if (!user) {

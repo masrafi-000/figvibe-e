@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "contract:emit": "prisma contract emit",
-    "docs:generate": "tsx src/scripts/openapi.collection.ts"
+    "docs:generate": "tsx src/scripts/openapi.collection.ts",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "private": true,
   "devDependencies": {

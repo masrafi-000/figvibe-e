@@ -6,7 +6,7 @@ import {
   setAuthCookies,
 } from '../../common/utils/jwt';
 import { env } from '../../config/env';
-import { loginSchema, registerSchema } from './auth.schema';
+import { ZCILogin, ZCIRegister } from './auth.schema';
 import type { AuthService } from './auth.service';
 
 export class AuthController {
@@ -18,7 +18,7 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const parsedBody = registerSchema.parse(req.body);
+      const parsedBody = ZCIRegister.parse(req.body);
       const result = await this.authService.register(parsedBody, {
         userAgent: req.headers['user-agent'],
         ipAddress: req.ip,
@@ -44,7 +44,7 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const parsedBody = loginSchema.parse(req.body);
+      const parsedBody = ZCILogin.parse(req.body);
       const result = await this.authService.login(parsedBody, {
         userAgent: req.headers['user-agent'],
         ipAddress: req.ip,

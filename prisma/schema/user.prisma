@@ -46,6 +46,8 @@ model Role {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("roles")
 }
 
 model Permission {
@@ -58,7 +60,9 @@ model Permission {
   roles RolePermission[]
 
   createdAt DateTime @default(now())
+
   @@unique([resource, action])
+  @@map("permissions")
 }
 
 model RolePermission {
@@ -69,6 +73,7 @@ model RolePermission {
   permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@id([roleId, permissionId])
+  @@map("role_permissions")
 }
 
 model Account {

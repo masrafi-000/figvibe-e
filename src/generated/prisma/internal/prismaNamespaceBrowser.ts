@@ -68,6 +68,9 @@ export const ModelName = {
   Color: 'Color',
   ProductImage: 'ProductImage',
   User: 'User',
+  Role: 'Role',
+  Permission: 'Permission',
+  RolePermission: 'RolePermission',
   Account: 'Account',
   AuthSession: 'AuthSession',
   EmailVerificationToken: 'EmailVerificationToken',
@@ -340,7 +343,7 @@ export const UserScalarFieldEnum = {
   username: 'username',
   avatarUrl: 'avatarUrl',
   phone: 'phone',
-  role: 'role',
+  roleId: 'roleId',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -348,6 +351,36 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const RoleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
+
+
+export const PermissionScalarFieldEnum = {
+  id: 'id',
+  resource: 'resource',
+  action: 'action',
+  description: 'description',
+  createdAt: 'createdAt'
+} as const
+
+export type PermissionScalarFieldEnum = (typeof PermissionScalarFieldEnum)[keyof typeof PermissionScalarFieldEnum]
+
+
+export const RolePermissionScalarFieldEnum = {
+  roleId: 'roleId',
+  permissionId: 'permissionId'
+} as const
+
+export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
 
 
 export const AccountScalarFieldEnum = {
