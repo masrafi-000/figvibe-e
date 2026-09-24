@@ -18,8 +18,21 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
       username: z.string().nullable().optional(),
       phone: z.string().nullable().optional(),
       role: z.string(),
+      status: z.string().optional(),
+      emailVerified: z.string().nullable().optional(),
+      lastLoginAt: z.string().nullable().optional(),
       createdAt: z.string().optional(),
       updatedAt: z.string().optional(),
+    }),
+  );
+
+  const ZCIAuthDataResponse = registry.register(
+    'AuthDataResponse',
+    z.object({
+      user: ZCIUserResponse,
+      accessToken: z.string().optional(),
+      refreshToken: z.string().optional(),
+      tokenType: z.string().optional(),
     }),
   );
 
@@ -28,9 +41,7 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
     z.object({
       success: z.boolean(),
       message: z.string(),
-      data: z.object({
-        user: ZCIUserResponse,
-      }),
+      data: ZCIAuthDataResponse,
     }),
   );
 
@@ -118,7 +129,18 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
     method: 'post',
     path: '/api/v1/auth/refresh',
     tags: ['Auth'],
-    summary: 'Refresh access token via refresh token cookie',
+    summary: 'Refresh access token via cookie or request body',
+    request: {
+      body: {
+        content: {
+          'application/json': {
+            schema: z.object({
+              refreshToken: z.string().optional(),
+            }),
+          },
+        },
+      },
+    },
     responses: {
       200: {
         description: 'Token refreshed successfully',
@@ -138,6 +160,17 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
     path: '/api/v1/auth/logout',
     tags: ['Auth'],
     summary: 'Log out current session and revoke tokens',
+    request: {
+      body: {
+        content: {
+          'application/json': {
+            schema: z.object({
+              refreshToken: z.string().optional(),
+            }),
+          },
+        },
+      },
+    },
     responses: {
       200: {
         description: 'Logged out successfully',
@@ -170,6 +203,29 @@ export const registerAuthDocs = (registry: OpenAPIRegistry): void => {
               data: z.object({
                 user: ZCIUserResponse,
               }),
+            }),
+          },
+        },
+      },
+      401: { description: 'Authentication required' },
+    },
+  });
+
+  // Get Bearer Token
+  registry.registerPath({
+    method: 'get',
+    path: '/api/v1/auth/token',
+    tags: ['Auth'],
+    summary: 'Get Bearer access token for current session',
+    security: [{ bearerAuth: [] }],
+    responses: {
+      200: {
+        description: 'Bearer token details',
+        content: {
+          'application/json': {
+            schema: z.object({
+              success: z.boolean(),
+              data: ZCIAuthDataResponse,
             }),
           },
         },

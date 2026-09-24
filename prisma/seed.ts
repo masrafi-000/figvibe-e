@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import bcrypt from 'bcryptjs';
 import { PrismaClient } from '../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -117,6 +118,9 @@ const ROLE_PERMISSIONS_MAP: Record<string, string[]> = {
   SUPER_ADMIN: PERMISSIONS.map((p) => `${p.resource}:${p.action}`),
 };
 
+const SUPER_ADMIN_EMAIL = 'smmasrafi01@gmail.com';
+const SUPER_ADMIN_PASSWORD = 'admin@1234';
+
 async function main() {
   console.log('🌱 Starting database seed for Roles & Permissions...');
 
@@ -175,7 +179,37 @@ async function main() {
     }
   }
 
-  console.log('✅ Database seeded successfully with Roles and Permissions!');
+  // 4. Seed Super Admin User
+  console.log('4. Upserting Super Admin User...');
+  const superAdminRoleId = roleMap.get('SUPER_ADMIN');
+  if (!superAdminRoleId) {
+    throw new Error('SUPER_ADMIN role not found');
+  }
+
+  const passwordHash = await bcrypt.hash(SUPER_ADMIN_PASSWORD, 10);
+
+  const superAdmin = await prisma.user.upsert({
+    where: { email: SUPER_ADMIN_EMAIL },
+    update: {
+      passwordHash,
+      roleId: superAdminRoleId,
+      status: 'ACTIVE',
+      emailVerified: new Date(),
+    },
+    create: {
+      email: SUPER_ADMIN_EMAIL,
+      passwordHash,
+      firstName: 'Super',
+      lastName: 'Admin',
+      username: 'superadmin',
+      roleId: superAdminRoleId,
+      status: 'ACTIVE',
+      emailVerified: new Date(),
+    },
+  });
+
+  console.log(`👤 Super Admin ready: ${superAdmin.email} (ID: ${superAdmin.id})`);
+  console.log('✅ Database seeded successfully with Roles, Permissions, and Super Admin!');
 }
 
 main()

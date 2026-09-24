@@ -40,7 +40,8 @@ export class AuthRouter {
     this.router.post('/refresh', this.controller.refresh);
     this.router.post('/logout', this.controller.logout);
 
-    // Current user profile
+    // Current user profile & bearer token
     this.router.get('/me', authenticate, this.controller.me);
+    this.router.get('/token', authenticate, this.controller.getToken);
   }
 }

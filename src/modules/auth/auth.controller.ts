@@ -31,6 +31,9 @@ export class AuthController {
         message: 'Account registered successfully',
         data: {
           user: result.user,
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          tokenType: 'Bearer',
         },
       });
     } catch (error) {
@@ -57,6 +60,9 @@ export class AuthController {
         message: 'Logged in successfully',
         data: {
           user: result.user,
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          tokenType: 'Bearer',
         },
       });
     } catch (error) {
@@ -95,9 +101,11 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const refreshToken = req.cookies?.[REFRESH_COOKIE_NAME];
+      const refreshToken =
+        req.cookies?.[REFRESH_COOKIE_NAME] || (req.body?.refreshToken as string | undefined);
+
       if (!refreshToken) {
-        throw new AppError('Refresh token not provided in cookies', 401);
+        throw new AppError('Refresh token not provided in cookies or request body', 401);
       }
 
       const result = await this.authService.refreshTokens(refreshToken, {
@@ -112,6 +120,9 @@ export class AuthController {
         message: 'Token refreshed successfully',
         data: {
           user: result.user,
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          tokenType: 'Bearer',
         },
       });
     } catch (error) {
@@ -125,7 +136,9 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const refreshToken = req.cookies?.[REFRESH_COOKIE_NAME];
+      const refreshToken =
+        req.cookies?.[REFRESH_COOKIE_NAME] || (req.body?.refreshToken as string | undefined);
+
       await this.authService.logout(refreshToken);
 
       clearAuthCookies(res);
@@ -156,6 +169,34 @@ export class AuthController {
         success: true,
         data: {
           user,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const userId = req.user?.userId || req.user?.id;
+      if (!userId) {
+        throw new AppError('Authentication required', 401);
+      }
+
+      const result = await this.authService.generateTokenForUser(userId);
+      setAuthCookies(res, result.accessToken, result.refreshToken);
+
+      res.status(200).json({
+        success: true,
+        data: {
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          tokenType: result.tokenType,
+          user: result.user,
         },
       });
     } catch (error) {

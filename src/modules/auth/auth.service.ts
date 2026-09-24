@@ -308,4 +308,37 @@ export class AuthService {
 
     return this.sanitizeUser(user);
   }
+
+  async generateTokenForUser(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        role: true,
+      },
+    });
+
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+
+    if (user.status !== 'ACTIVE') {
+      throw new AppError('Your account is not active', 403);
+    }
+
+    const payload: TokenPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role.name,
+    };
+
+    const accessToken = signAccessToken(payload);
+    const refreshToken = signRefreshToken(payload);
+
+    return {
+      user: this.sanitizeUser(user),
+      accessToken,
+      refreshToken,
+      tokenType: 'Bearer' as const,
+    };
+  }
 }
