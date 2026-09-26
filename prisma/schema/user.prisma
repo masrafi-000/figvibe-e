@@ -27,6 +27,8 @@ model User {
   wishlist Wishlist?
   passwordResetTokens PasswordResetToken[]
 
+  logs AuditLog[]
+
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   lastLoginAt     DateTime?

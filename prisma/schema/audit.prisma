@@ -1,0 +1,60 @@
+enum AuditAction {
+    CREATE
+    UPDATE
+    DELETE
+    LOGIN
+    LOGOUT
+    PASSWORD_CHANGE
+    ROLE_CHANGE
+    STATUS_CHANGE
+    EXPORT
+    IMPERSONATE
+    BULK_UPDATE
+    BULK_DELETE
+}
+
+enum AuditActorType {
+    USER
+    SYSTEM
+    WEBHOOK
+    API_KEY
+    ANONYMOUS
+}
+
+enum AuditStatus {
+    SUCCESS
+    FAILED
+}
+
+model AuditLog {
+    id String @id @default(cuid())
+
+    action      AuditAction
+    status      AuditStatus @default(SUCCESS)
+    resource    String
+    resourceId  String?
+    description String?
+
+    oldValues    Json?
+    newValues    Json?
+    metadata     Json?
+    errorMessage String?
+
+    actorType  AuditActorType @default(USER)
+    actorId    String?
+    actorEmail String?
+    actor      User?          @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+    ipAddress String?
+    userAgent String?
+    requestId String?
+
+    createdAt DateTime @default(now())
+
+    @@index([actorId, createdAt])
+    @@index([resource, resourceId, createdAt])
+    @@index([action, createdAt])
+    @@index([status])
+    @@index([createdAt])
+    @@map("audit_logs")
+}

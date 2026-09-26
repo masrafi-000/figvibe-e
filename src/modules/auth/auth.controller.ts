@@ -6,11 +6,15 @@ import {
   setAuthCookies,
 } from '../../common/utils/jwt';
 import { env } from '../../config/env';
+import type { AuditService } from '../audit/audit.service';
 import { ZCILogin, ZCIRegister } from './auth.schema';
 import type { AuthService } from './auth.service';
 
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly auditService: AuditService,
+  ) {}
 
   register = async (
     req: Request,
@@ -25,6 +29,20 @@ export class AuthController {
       });
 
       setAuthCookies(res, result.accessToken, result.refreshToken);
+
+      void this.auditService.log({
+        req,
+        action: 'CREATE',
+        resource: 'User',
+        resourceId: result.user.id,
+        actorId: result.user.id,
+        actorEmail: result.user.email,
+        description: `New user registered with email ${result.user.email}`,
+        newValues: {
+          email: result.user.email,
+          role: result.user.role,
+        },
+      });
 
       res.status(201).json({
         success: true,
@@ -54,6 +72,16 @@ export class AuthController {
       });
 
       setAuthCookies(res, result.accessToken, result.refreshToken);
+
+      void this.auditService.log({
+        req,
+        action: 'LOGIN',
+        resource: 'User',
+        resourceId: result.user.id,
+        actorId: result.user.id,
+        actorEmail: result.user.email,
+        description: `User ${result.user.email} logged in successfully`,
+      });
 
       res.status(200).json({
         success: true,
@@ -88,6 +116,15 @@ export class AuthController {
       });
 
       setAuthCookies(res, result.accessToken, result.refreshToken);
+
+      void this.auditService.log({
+        req,
+        action: 'LOGIN',
+        resource: 'User',
+        resourceId: userId,
+        actorId: userId,
+        description: 'User logged in via Google OAuth',
+      });
 
       res.redirect(env.FRONTEND_URL);
     } catch (error) {
@@ -144,9 +181,20 @@ export class AuthController {
         req.cookies?.[REFRESH_COOKIE_NAME] ||
         (req.body?.refreshToken as string | undefined);
 
+      const userId = req.user?.userId || req.user?.id;
+
       await this.authService.logout(refreshToken);
 
       clearAuthCookies(res);
+
+      void this.auditService.log({
+        req,
+        action: 'LOGOUT',
+        resource: 'User',
+        resourceId: userId,
+        actorId: userId,
+        description: 'User logged out',
+      });
 
       res.status(200).json({
         success: true,

@@ -5,5 +5,6 @@ const router = Router();
 
 router.use('/auth', container.authRouter.router);
 router.use('/users', container.userRouter.router);
+router.use('/audit-logs', container.auditRouter.router);
 
 export { router as apiRouter };
