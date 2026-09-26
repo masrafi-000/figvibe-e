@@ -43,6 +43,13 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1).optional(),
   GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
   GOOGLE_CALLBACK_URL: z.string().url().optional(),
+
+  // SMTP OAUTH
+  SMTP_USER: z.string().email().optional(),
+  SMTP_CLIENT_ID: z.string().min(1).optional(),
+  SMTP_CLIENT_SECRET: z.string().min(1).optional(),
+  SMTP_REFRESH_TOKEN: z.string().min(1).optional(),
+  SMTP_FROM: z.string().default('Figvibe <no-reply@figvibe.com'),
 });
 
 const parsed = envSchema.safeParse(process.env);
