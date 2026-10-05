@@ -46,7 +46,7 @@ export class CategoryService {
       }
     }
 
-    await this.prisma.category.create({
+    return await this.prisma.category.create({
       data: {
         name: data.name,
         slug,

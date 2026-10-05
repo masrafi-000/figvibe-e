@@ -1,6 +1,12 @@
 import 'dotenv/config';
 import { z } from 'zod';
 
+const emptyToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    schema,
+  );
+
 const envSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
@@ -40,16 +46,16 @@ const envSchema = z.object({
   FRONTEND_URL: z.string().default('http://localhost:3000'),
 
   // Google OAuth
-  GOOGLE_CLIENT_ID: z.string().min(1).optional(),
-  GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
-  GOOGLE_CALLBACK_URL: z.string().url().optional(),
+  GOOGLE_CLIENT_ID: emptyToUndefined(z.string().min(1).optional()),
+  GOOGLE_CLIENT_SECRET: emptyToUndefined(z.string().min(1).optional()),
+  GOOGLE_CALLBACK_URL: emptyToUndefined(z.string().url().optional()),
 
   // SMTP OAUTH
-  SMTP_USER: z.string().email().optional(),
-  SMTP_CLIENT_ID: z.string().min(1).optional(),
-  SMTP_CLIENT_SECRET: z.string().min(1).optional(),
-  SMTP_REFRESH_TOKEN: z.string().min(1).optional(),
-  SMTP_FROM: z.string().default('Figvibe <no-reply@figvibe.com'),
+  SMTP_USER: emptyToUndefined(z.string().email().optional()),
+  SMTP_CLIENT_ID: emptyToUndefined(z.string().min(1).optional()),
+  SMTP_CLIENT_SECRET: emptyToUndefined(z.string().min(1).optional()),
+  SMTP_REFRESH_TOKEN: emptyToUndefined(z.string().min(1).optional()),
+  SMTP_FROM: z.string().default('Figvibe <no-reply@figvibe.com>'),
 });
 
 const parsed = envSchema.safeParse(process.env);
