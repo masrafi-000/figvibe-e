@@ -1,0 +1,53 @@
+
+
+discovery.docker "docker_containers" {
+    host = "unix:///var/run/docker.sock"
+}
+
+
+loki.source.docker "docker_logs" {
+    host = "unix:///var/run/docker.sock"
+    targets = discovery.docker.docker_containers.targets
+    forward_to = [loki.process.json_parser.receiver]
+}
+
+loki.process "json_parser" {
+    stage.json {
+        expressions = {
+            level = "level",
+            message = "msg",
+            traceId = "traceId",
+        }
+    }
+
+    stage.labels {
+        values = {
+            level = "",
+        }
+    }
+
+    forward_to = [loki.write.loki_server.receiver]
+}
+
+loki.write "loki_server" {
+    endpoint {
+        url = "http://loki:3100/loki/api/v1/push"
+    }
+}
+
+prometheus.scrape "express_backend" {
+    targets = [{
+        __address__ = "host.docker.internal:5000",
+    }]
+    metrics_path = "/metrics"
+    scrape_interval = "5s"
+    scrape_timeout  = "4s"
+
+    forward_to = [prometheus.remote_write.prometheus_server.receiver]
+}
+
+prometheus.remote_write "prometheus_server" {
+    endpoint {
+        url = "http://prometheus:9090/api/v1/write"
+    }
+}

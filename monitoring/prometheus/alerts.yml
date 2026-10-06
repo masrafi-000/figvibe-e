@@ -1,0 +1,32 @@
+groups:
+  - name: backend_alerts
+    rules:
+      # Rule 1: High HTTP 5xx Error Rate (> 5% in 2 mins)
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status_code=~"5.."}[2m])) / sum(rate(http_requests_total[2m])) * 100 > 5
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High HTTP 5xx error rate detected"
+          description: "HTTP 5xx error rate is above 5% on {{ $labels.instance }} (Current value: {{ $value }}%)"
+
+      # Rule 2: High Latency / Slow Response Time (> 1.5 seconds)
+      - alert: HighRequestLatency
+        expr: histogram_quantile(0.95, sum(rate(http_req_duration_seconds_bucket[5m])) by (le)) > 1.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High HTTP latency detected"
+          description: "95% of HTTP requests are taking longer than 1.5 seconds on route {{ $labels.route }}"
+
+      # Rule 3: Backend Service Down
+      - alert: ServiceDown
+        expr: up{job="figvibe-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend Server is DOWN!"
+          description: "Target {{ $labels.instance }} is unreachable."

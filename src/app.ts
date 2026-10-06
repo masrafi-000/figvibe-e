@@ -15,8 +15,30 @@ import { RedisStore } from 'connect-redis';
 import { env } from './config/env';
 import passport from './config/passport';
 import { redis } from './common/redis';
+import { metricsMiddleware } from './middleware/metrics.middleware';
+import { register } from './config/metrics';
 
 const app = express();
+
+app.use(metricsMiddleware);
+
+app.use(
+  pinoHttp({
+    logger,
+    customProps: (req: Request) => ({
+      traceId: (req.headers['x-request-id'] as string) || undefined,
+    }),
+    serializers: {
+      req: (req: Request) => ({
+        method: req.method,
+        url: req.url,
+      }),
+      res: (res: Response) => ({
+        statusCode: res.statusCode,
+      }),
+    },
+  }),
+);
 
 app.disable('x-powered-by');
 
@@ -29,21 +51,6 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 app.use(cookieParser());
-
-app.use(
-  pinoHttp({
-    logger,
-    serializers: {
-      req: (req: Request) => ({
-        method: req.method,
-        url: req.url,
-      }),
-      res: (res: Response) => ({
-        statusCode: res.statusCode,
-      }),
-    },
-  }),
-);
 
 app.set('trust proxy', 1);
 
@@ -70,6 +77,16 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.get('/metrics', async (_req: Request, res: Response) => {
+  try {
+    res.set('Content-Type', register.contentType);
+
+    res.end(await register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
 
 app.use('/health', container.healthRouter.router);
 
