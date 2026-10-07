@@ -8,8 +8,8 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "High HTTP 5xx error rate detected"
-          description: "HTTP 5xx error rate is above 5% on {{ $labels.instance }} (Current value: {{ $value }}%)"
+          summary: 'High HTTP 5xx error rate detected'
+          description: 'HTTP 5xx error rate is above 5% on {{ $labels.instance }} (Current value: {{ $value }}%)'
 
       # Rule 2: High Latency / Slow Response Time (> 1.5 seconds)
       - alert: HighRequestLatency
@@ -18,8 +18,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "High HTTP latency detected"
-          description: "95% of HTTP requests are taking longer than 1.5 seconds on route {{ $labels.route }}"
+          summary: 'High HTTP latency detected'
+          description: '95% of HTTP requests are taking longer than 1.5 seconds on route {{ $labels.route }}'
 
       # Rule 3: Backend Service Down
       - alert: ServiceDown
@@ -28,5 +28,5 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Backend Server is DOWN!"
-          description: "Target {{ $labels.instance }} is unreachable."
+          summary: 'Backend Server is DOWN!'
+          description: 'Target {{ $labels.instance }} is unreachable.'

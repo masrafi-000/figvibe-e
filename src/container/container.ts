@@ -6,6 +6,15 @@ import { AuditService } from '../modules/audit/audit.service';
 import { AuthController } from '../modules/auth/auth.controller';
 import { AuthRouter } from '../modules/auth/auth.route';
 import { AuthService } from '../modules/auth/auth.service';
+import { BrandController } from '../modules/brand/brand.controller';
+import { BrandRouter } from '../modules/brand/brand.route';
+import { BrandService } from '../modules/brand/brand.service';
+import { CategoryController } from '../modules/category/category.controller';
+import { CategoryRouter } from '../modules/category/category.route';
+import { CategoryService } from '../modules/category/category.service';
+import { FabricController } from '../modules/fabric/fabric.controller';
+import { FabricRouter } from '../modules/fabric/fabric.route';
+import { FabricService } from '../modules/fabric/fabric.service';
 import { HealthController } from '../modules/health/health.controller';
 import { HealthRouter } from '../modules/health/health.route';
 import { UserController } from '../modules/user/user.controller';
@@ -37,6 +46,24 @@ const userService = new UserService(database);
 const userController = new UserController(userService, auditService);
 const userRouter = new UserRouter(userController);
 
+// Category module
+const categoryService = new CategoryService(database);
+const categoryController = new CategoryController(
+  categoryService,
+  auditService,
+);
+const categoryRouter = new CategoryRouter(categoryController);
+
+// Fabric module
+const fabricService = new FabricService(database);
+const fabricController = new FabricController(fabricService, auditService);
+const fabricRouter = new FabricRouter(fabricController);
+
+// Brand module
+const brandService = new BrandService(database);
+const brandController = new BrandController(brandService, auditService);
+const brandRouter = new BrandRouter(brandController);
+
 // Export container
 export const container = {
   database,
@@ -51,4 +78,13 @@ export const container = {
   auditRouter,
   auditService,
   auditController,
+  categoryRouter,
+  categoryService,
+  categoryController,
+  fabricRouter,
+  fabricService,
+  fabricController,
+  brandRouter,
+  brandService,
+  brandController,
 };
