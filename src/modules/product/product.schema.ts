@@ -7,29 +7,6 @@ export const ProductStatusEnum = z.enum([
   'ARCHIVED',
 ]);
 
-// Size Schema
-export const ZCISize = z.object({
-  name: z.string().min(1, 'Size name is required'),
-  code: z.string().min(1, 'Size code is required'),
-  sortOrder: z.number().int().default(0),
-  isActive: z.boolean().default(true),
-});
-
-export const ZCIUpdateSize = ZCISize.partial();
-
-// Color Schema
-export const ZCIColor = z.object({
-  name: z.string().min(1, 'Color name is required'),
-  slug: z.string().optional(),
-  hex: z
-    .string()
-    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid HEX color code')
-    .optional(),
-  isActive: z.boolean().default(true),
-});
-
-export const ZCIUpdateColor = ZCIColor.partial();
-
 // Product Variant Schema
 export const ZCIProductVariant = z.object({
   sku: z.string().min(1, 'SKU is required'),
@@ -99,8 +76,6 @@ export const ZCIProductQuery = z.object({
 });
 
 // Export Infer Types
-export type ZCTSize = z.infer<typeof ZCISize>;
-export type ZCTColor = z.infer<typeof ZCIColor>;
 export type ZCTProductVariant = z.infer<typeof ZCIProductVariant>;
 export type ZCTUpdateProductVariant = z.infer<typeof ZCIUpdateProductVariant>;
 export type ZCTProductImage = z.infer<typeof ZCIProductImage>;

@@ -12,6 +12,9 @@ import { BrandService } from '../modules/brand/brand.service';
 import { CategoryController } from '../modules/category/category.controller';
 import { CategoryRouter } from '../modules/category/category.route';
 import { CategoryService } from '../modules/category/category.service';
+import { ColorController } from '../modules/color/color.controller';
+import { ColorRouter } from '../modules/color/color.route';
+import { ColorService } from '../modules/color/color.service';
 import { FabricController } from '../modules/fabric/fabric.controller';
 import { FabricRouter } from '../modules/fabric/fabric.route';
 import { FabricService } from '../modules/fabric/fabric.service';
@@ -20,6 +23,9 @@ import { HealthRouter } from '../modules/health/health.route';
 import { ProductController } from '../modules/product/product.controller';
 import { ProductRouter } from '../modules/product/product.route';
 import { ProductService } from '../modules/product/product.service';
+import { SizeController } from '../modules/size/size.controller';
+import { SizeRouter } from '../modules/size/size.route';
+import { SizeService } from '../modules/size/size.service';
 import { UserController } from '../modules/user/user.controller';
 import { UserRouter } from '../modules/user/user.route';
 import { UserService } from '../modules/user/user.service';
@@ -67,6 +73,16 @@ const brandService = new BrandService(database);
 const brandController = new BrandController(brandService, auditService);
 const brandRouter = new BrandRouter(brandController);
 
+// Size module
+const sizeService = new SizeService(database, redis);
+const sizeController = new SizeController(sizeService, auditService);
+const sizeRouter = new SizeRouter(sizeController);
+
+// Color module
+const colorService = new ColorService(database, redis);
+const colorController = new ColorController(colorService, auditService);
+const colorRouter = new ColorRouter(colorController);
+
 // Product module
 const productService = new ProductService(database, redis);
 const productController = new ProductController(productService, auditService);
@@ -95,6 +111,12 @@ export const container = {
   brandRouter,
   brandService,
   brandController,
+  sizeRouter,
+  sizeService,
+  sizeController,
+  colorRouter,
+  colorService,
+  colorController,
   productRouter,
   productService,
   productController,

@@ -2,11 +2,9 @@ import type { NextFunction, Request, Response } from 'express';
 import type { AuditService } from '../audit/audit.service';
 import type { ProductService } from './product.service';
 import {
-  ZCIColor,
   ZCIProduct,
   ZCIProductQuery,
   ZCIProductVariant,
-  ZCISize,
   ZCIUpdateProduct,
   ZCIUpdateProductVariant,
 } from './product.schema';
@@ -17,72 +15,6 @@ export class ProductController {
     private readonly productService: ProductService,
     private readonly auditService: AuditService,
   ) {}
-
-  // Create Size
-  createSize = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
-    try {
-      const payload = ZCISize.parse(req.body);
-      const size = await this.productService.createSize(payload);
-      res.status(201).json({
-        success: true,
-        message: 'Size created successfully',
-        data: { size },
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  // Get All Sizes
-  getAllSizes = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
-    try {
-      const sizes = await this.productService.getAllSizes();
-      res.status(200).json({ success: true, data: { sizes } });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  // Create Color
-  createColor = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
-    try {
-      const payload = ZCIColor.parse(req.body);
-      const color = await this.productService.createColor(payload);
-      res.status(201).json({
-        success: true,
-        message: 'Color created successfully',
-        data: { color },
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  // Get All Colors
-  getAllColors = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
-    try {
-      const colors = await this.productService.getAllColors();
-      res.status(200).json({ success: true, data: { colors } });
-    } catch (error) {
-      next(error);
-    }
-  };
 
   // Create Product
   createProduct = async (
