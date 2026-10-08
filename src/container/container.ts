@@ -17,6 +17,9 @@ import { FabricRouter } from '../modules/fabric/fabric.route';
 import { FabricService } from '../modules/fabric/fabric.service';
 import { HealthController } from '../modules/health/health.controller';
 import { HealthRouter } from '../modules/health/health.route';
+import { ProductController } from '../modules/product/product.controller';
+import { ProductRouter } from '../modules/product/product.route';
+import { ProductService } from '../modules/product/product.service';
 import { UserController } from '../modules/user/user.controller';
 import { UserRouter } from '../modules/user/user.route';
 import { UserService } from '../modules/user/user.service';
@@ -64,6 +67,11 @@ const brandService = new BrandService(database);
 const brandController = new BrandController(brandService, auditService);
 const brandRouter = new BrandRouter(brandController);
 
+// Product module
+const productService = new ProductService(database);
+const productController = new ProductController(productService, auditService);
+const productRouter = new ProductRouter(productController);
+
 // Export container
 export const container = {
   database,
@@ -87,4 +95,7 @@ export const container = {
   brandRouter,
   brandService,
   brandController,
+  productRouter,
+  productService,
+  productController,
 };

@@ -1,11 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { AuditService } from '../audit/audit.service';
 import type { FabricService } from './fabric.service';
-import {
-  ZCIFabric,
-  ZCIFabricQuery,
-  ZCIUpdateFabric,
-} from './fabric.schema';
+import { ZCIFabric, ZCIFabricQuery, ZCIUpdateFabric } from './fabric.schema';
 import { AppError } from '../../common/utils/AppError';
 
 export class FabricController {

@@ -167,25 +167,32 @@ export class CategoryController {
     }
   };
 
-  getCategoryTree = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getCategoryTree = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const tree = await this.categoryService.getCategoryTree();
 
       res.status(200).json({
         success: true,
-        data: {tree}
-      })
+        data: { tree },
+      });
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  };
 
-
-  deleteCategory = async (req: Request, res:Response, next: NextFunction): Promise<void> => {
+  deleteCategory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
-      const id = req.params.id as string
+      const id = req.params.id as string;
 
-      if(!id) throw new AppError('Category Id is required', 400)
+      if (!id) throw new AppError('Category Id is required', 400);
 
       const category = await this.categoryService.getCategoryById(id);
 
@@ -193,9 +200,9 @@ export class CategoryController {
 
       void this.auditService.log({
         req,
-        action: "DELETE",
-        status: "SUCCESS",
-        resource: "Category",
+        action: 'DELETE',
+        status: 'SUCCESS',
+        resource: 'Category',
         resourceId: id,
         description: `Category '${category.name}' deleted by ${req.user?.email || 'user'}`,
         oldValues: {
@@ -206,26 +213,27 @@ export class CategoryController {
           isActive: category.isActive,
         },
         newValues: null,
-        actorType: "USER",
+        actorType: 'USER',
         actorId: req.user?.id || req.user?.userId || null,
         actorEmail: req.user?.email || null,
-        ipAddress: (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || null,
-        userAgent: req.get("user-agent") || null,
-        requestId: (req.headers["x-request-id"] as string) || null,
+        ipAddress:
+          (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
+          req.ip ||
+          null,
+        userAgent: req.get('user-agent') || null,
+        requestId: (req.headers['x-request-id'] as string) || null,
         metadata: {
           role: req.user?.role || null,
           deletedAt: new Date().toISOString(),
         },
-      })
+      });
 
       res.status(200).json({
         success: true,
-        message: "Category deleted successfully",
-      })
-
+        message: 'Category deleted successfully',
+      });
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
-
+  };
 }
