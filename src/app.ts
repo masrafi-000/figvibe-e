@@ -9,6 +9,7 @@ import { logger } from './config/logger';
 import { container } from './container/container';
 import { errorMiddleware } from './middleware/error.middleware';
 import { notFoundMiddleware } from './middleware/not_found.middleware';
+import { globalRateLimiter } from './middleware/rate_limiter.middleware';
 import { apiRouter } from './routes';
 import session from 'express-session';
 import { RedisStore } from 'connect-redis';
@@ -103,7 +104,7 @@ app.use(
   }),
 );
 
-app.use('/api/v1', apiRouter);
+app.use('/api/v1', globalRateLimiter, apiRouter);
 
 app.use(notFoundMiddleware);
 

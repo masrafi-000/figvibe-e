@@ -68,7 +68,7 @@ const brandController = new BrandController(brandService, auditService);
 const brandRouter = new BrandRouter(brandController);
 
 // Product module
-const productService = new ProductService(database);
+const productService = new ProductService(database, redis);
 const productController = new ProductController(productService, auditService);
 const productRouter = new ProductRouter(productController);
 

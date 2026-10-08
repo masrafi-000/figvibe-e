@@ -27,13 +27,11 @@ export class ProductController {
     try {
       const payload = ZCISize.parse(req.body);
       const size = await this.productService.createSize(payload);
-      res
-        .status(201)
-        .json({
-          success: true,
-          message: 'Size created successfully',
-          data: { size },
-        });
+      res.status(201).json({
+        success: true,
+        message: 'Size created successfully',
+        data: { size },
+      });
     } catch (error) {
       next(error);
     }
@@ -62,13 +60,11 @@ export class ProductController {
     try {
       const payload = ZCIColor.parse(req.body);
       const color = await this.productService.createColor(payload);
-      res
-        .status(201)
-        .json({
-          success: true,
-          message: 'Color created successfully',
-          data: { color },
-        });
+      res.status(201).json({
+        success: true,
+        message: 'Color created successfully',
+        data: { color },
+      });
     } catch (error) {
       next(error);
     }
@@ -346,12 +342,10 @@ export class ProductController {
 
       await this.productService.deleteVariant(variantId);
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: 'Product variant deleted successfully',
-        });
+      res.status(200).json({
+        success: true,
+        message: 'Product variant deleted successfully',
+      });
     } catch (error) {
       next(error);
     }

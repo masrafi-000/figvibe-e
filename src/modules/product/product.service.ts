@@ -1,3 +1,4 @@
+import type { RedisDatabase } from '../../common/redis';
 import { AppError } from '../../common/utils/AppError';
 import type { Database } from '../../db/prisma';
 import type { Prisma } from '../../generated/prisma/client';
@@ -12,10 +13,17 @@ import type {
 } from './product.schema';
 
 export class ProductService {
-  constructor(private readonly database: Database) {}
+  constructor(
+    private readonly database: Database,
+    private readonly redisDb: RedisDatabase,
+  ) {}
 
   private get prisma() {
     return this.database.client;
+  }
+
+  private get redis() {
+    return this.redisDb.client;
   }
 
   private generateSlug(name: string): string {
@@ -26,6 +34,28 @@ export class ProductService {
       .replace(/^-+|-+$/g, '');
   }
 
+  // Cache Invalidation Helper
+  private async invalidateProductCache(
+    id?: string,
+    slug?: string,
+  ): Promise<void> {
+    try {
+      const keys: string[] = [];
+      if (id) keys.push(`product:id:${id}`);
+      if (slug) keys.push(`product:slug:${slug}`);
+
+      // Find query list cache keys
+      const listKeys = await this.redis.keys('products:query:*');
+      if (listKeys.length > 0) keys.push(...listKeys);
+
+      if (keys.length > 0) {
+        await this.redis.del(...keys);
+      }
+    } catch {
+      // Ignore cache failure gracefully
+    }
+  }
+
   // --- Size Methods ---
   async createSize(data: ZCTSize) {
     const existing = await this.prisma.size.findFirst({
@@ -34,13 +64,28 @@ export class ProductService {
     if (existing) {
       throw new AppError('Size with this name or code already exists', 409);
     }
-    return await this.prisma.size.create({ data });
+    const size = await this.prisma.size.create({ data });
+    await this.redis.del('sizes:all').catch(() => null);
+    return size;
   }
 
   async getAllSizes() {
-    return await this.prisma.size.findMany({
+    const cacheKey = 'sizes:all';
+    try {
+      const cached = await this.redis.get(cacheKey);
+      if (cached) return JSON.parse(cached);
+    } catch {
+      // Fallthrough to DB
+    }
+
+    const sizes = await this.prisma.size.findMany({
       orderBy: { sortOrder: 'asc' },
     });
+
+    await this.redis
+      .set(cacheKey, JSON.stringify(sizes), 'EX', 1800)
+      .catch(() => null);
+    return sizes;
   }
 
   // --- Color Methods ---
@@ -50,7 +95,7 @@ export class ProductService {
     if (existing) {
       throw new AppError(`Color with slug '${slug}' already exists`, 409);
     }
-    return await this.prisma.color.create({
+    const color = await this.prisma.color.create({
       data: {
         name: data.name,
         slug,
@@ -58,12 +103,27 @@ export class ProductService {
         isActive: data.isActive ?? true,
       },
     });
+    await this.redis.del('colors:all').catch(() => null);
+    return color;
   }
 
   async getAllColors() {
-    return await this.prisma.color.findMany({
+    const cacheKey = 'colors:all';
+    try {
+      const cached = await this.redis.get(cacheKey);
+      if (cached) return JSON.parse(cached);
+    } catch {
+      // Fallthrough to DB
+    }
+
+    const colors = await this.prisma.color.findMany({
       orderBy: { name: 'asc' },
     });
+
+    await this.redis
+      .set(cacheKey, JSON.stringify(colors), 'EX', 1800)
+      .catch(() => null);
+    return colors;
   }
 
   // --- Product Methods ---
@@ -142,7 +202,7 @@ export class ProductService {
     }
 
     // 6. Atomic creation with Prisma Transaction
-    return await this.prisma.$transaction(async (tx) => {
+    const resultProduct = await this.prisma.$transaction(async (tx) => {
       const product = await tx.product.create({
         data: {
           name: data.name,
@@ -208,9 +268,20 @@ export class ProductService {
 
       return createdProduct;
     });
+
+    await this.invalidateProductCache();
+    return resultProduct;
   }
 
   async getAllProducts(query: ZCTProductQuery) {
+    const cacheKey = `products:query:${JSON.stringify(query)}`;
+    try {
+      const cached = await this.redis.get(cacheKey);
+      if (cached) return JSON.parse(cached);
+    } catch {
+      // Fallthrough
+    }
+
     const {
       page = 1,
       limit = 20,
@@ -277,7 +348,7 @@ export class ProductService {
       }),
     ]);
 
-    return {
+    const result = {
       data: products,
       meta: {
         total,
@@ -286,9 +357,22 @@ export class ProductService {
         totalPages: Math.ceil(total / limit),
       },
     };
+
+    await this.redis
+      .set(cacheKey, JSON.stringify(result), 'EX', 300)
+      .catch(() => null);
+    return result;
   }
 
   async getProductById(id: string) {
+    const cacheKey = `product:id:${id}`;
+    try {
+      const cached = await this.redis.get(cacheKey);
+      if (cached) return JSON.parse(cached);
+    } catch {
+      // Fallthrough
+    }
+
     const product = await this.prisma.product.findUnique({
       where: { id },
       include: {
@@ -309,10 +393,22 @@ export class ProductService {
     if (!product) {
       throw new AppError('Product not found', 404);
     }
+
+    await this.redis
+      .set(cacheKey, JSON.stringify(product), 'EX', 3600)
+      .catch(() => null);
     return product;
   }
 
   async getProductBySlug(slug: string) {
+    const cacheKey = `product:slug:${slug}`;
+    try {
+      const cached = await this.redis.get(cacheKey);
+      if (cached) return JSON.parse(cached);
+    } catch {
+      // Fallthrough
+    }
+
     const product = await this.prisma.product.findUnique({
       where: { slug },
       include: {
@@ -333,11 +429,15 @@ export class ProductService {
     if (!product) {
       throw new AppError('Product not found', 404);
     }
+
+    await this.redis
+      .set(cacheKey, JSON.stringify(product), 'EX', 3600)
+      .catch(() => null);
     return product;
   }
 
   async updateProduct(id: string, data: ZCTUpdateProduct) {
-    await this.getProductById(id);
+    const oldProduct = await this.getProductById(id);
 
     const slug = data.slug
       ? this.generateSlug(data.slug)
@@ -354,7 +454,7 @@ export class ProductService {
       }
     }
 
-    return await this.prisma.product.update({
+    const updated = await this.prisma.product.update({
       where: { id },
       data: {
         ...data,
@@ -368,16 +468,24 @@ export class ProductService {
         images: true,
       },
     });
+
+    await this.invalidateProductCache(id, oldProduct.slug);
+    if (slug && slug !== oldProduct.slug) {
+      await this.invalidateProductCache(id, slug);
+    }
+    return updated;
   }
 
   async deleteProduct(id: string) {
-    await this.getProductById(id);
-    return await this.prisma.product.delete({ where: { id } });
+    const product = await this.getProductById(id);
+    const result = await this.prisma.product.delete({ where: { id } });
+    await this.invalidateProductCache(id, product.slug);
+    return result;
   }
 
   // --- Variant Direct Operations ---
   async createVariant(productId: string, data: ZCTProductVariant) {
-    await this.getProductById(productId);
+    const product = await this.getProductById(productId);
 
     // Check size & color
     const [size, color] = await Promise.all([
@@ -413,7 +521,7 @@ export class ProductService {
       );
     }
 
-    return await this.prisma.productVariant.create({
+    const variant = await this.prisma.productVariant.create({
       data: {
         productId,
         sku: data.sku,
@@ -430,6 +538,9 @@ export class ProductService {
         color: true,
       },
     });
+
+    await this.invalidateProductCache(productId, product.slug);
+    return variant;
   }
 
   async updateVariant(variantId: string, data: ZCTUpdateProductVariant) {
@@ -449,11 +560,14 @@ export class ProductService {
       }
     }
 
-    return await this.prisma.productVariant.update({
+    const updated = await this.prisma.productVariant.update({
       where: { id: variantId },
       data,
       include: { size: true, color: true },
     });
+
+    await this.invalidateProductCache(variant.productId);
+    return updated;
   }
 
   async deleteVariant(variantId: string) {
@@ -463,8 +577,10 @@ export class ProductService {
     if (!variant) {
       throw new AppError('Product variant not found', 404);
     }
-    return await this.prisma.productVariant.delete({
+    const deleted = await this.prisma.productVariant.delete({
       where: { id: variantId },
     });
+    await this.invalidateProductCache(variant.productId);
+    return deleted;
   }
 }
