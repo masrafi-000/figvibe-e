@@ -72,8 +72,8 @@ model ProductVariant {
 model Size {
   id String @id @default(cuid())
 
-  name      String
-  code      String
+  name      String @unique
+  code      String @unique
   sortOrder Int    @default(0)
 
   isActive Boolean @default(true)
@@ -83,9 +83,7 @@ model Size {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([name, code])
-  @@index([sortOrder])
-  @@index([isActive])
+  @@index([sortOrder, isActive])
   @@map("sizes")
 }
 
