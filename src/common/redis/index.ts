@@ -8,11 +8,13 @@ export class RedisDatabase {
   constructor() {
     this.redis = new Redis(env.REDIS_URL, {
       lazyConnect: true,
+      enableOfflineQueue: false,
       maxRetriesPerRequest: 3,
       retryStrategy: (times: number) => {
         const delay = Math.min(times * 200, 2000);
         return delay;
       },
+      connectTimeout: 5000,
     });
 
     this.setupLogging();
@@ -89,7 +91,7 @@ export class RedisDatabase {
       const response = await this.redis.ping();
       return response === 'PONG';
     } catch (error) {
-      logger.error({ error }, 'Redis health check failed');
+      logger.error({ err: error }, 'Redis health check failed');
       return false;
     }
   }
