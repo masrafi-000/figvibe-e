@@ -6,6 +6,7 @@ import {
 import { z } from 'zod';
 
 import { registerAuthDocs } from '../modules/auth/auth.docs';
+import { registerCartDocs } from '../modules/cart/cart.docs';
 import { registerHealthDocs } from '../modules/health/health.docs';
 import { registerUserDocs } from '../modules/user/user.docs';
 
@@ -27,6 +28,7 @@ const initDocs = () => {
   registerHealthDocs(registry);
   registerAuthDocs(registry);
   registerUserDocs(registry);
+  registerCartDocs(registry);
   docsInitialized = true;
 };
 
@@ -58,6 +60,11 @@ export const generateOpenAPIDocument = () => {
         description: 'Role creation, updating, and permission mapping',
       },
       { name: 'Permissions', description: 'System permission definitions' },
+      {
+        name: 'Cart',
+        description:
+          'Shopping cart management, item quantities, and stock availability',
+      },
     ],
   });
 };

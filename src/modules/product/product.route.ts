@@ -11,23 +11,6 @@ export class ProductRouter {
   }
 
   private initializeRoutes(): void {
-    // Sizes & Colors
-    this.router.get('/sizes', this.productController.getAllSizes);
-    this.router.post(
-      '/sizes',
-      authenticate,
-      requireRole('ADMIN', 'SUPER_ADMIN'),
-      this.productController.createSize,
-    );
-
-    this.router.get('/colors', this.productController.getAllColors);
-    this.router.post(
-      '/colors',
-      authenticate,
-      requireRole('ADMIN', 'SUPER_ADMIN'),
-      this.productController.createColor,
-    );
-
     // Public Product Read Routes
     this.router.get('/', this.productController.getAllProducts);
     this.router.get('/slug/:slug', this.productController.getProductBySlug);

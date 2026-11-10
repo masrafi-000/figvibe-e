@@ -3,11 +3,9 @@ import { AppError } from '../../common/utils/AppError';
 import type { Database } from '../../db/prisma';
 import type { Prisma } from '../../generated/prisma/client';
 import type {
-  ZCTColor,
   ZCTProduct,
   ZCTProductQuery,
   ZCTProductVariant,
-  ZCTSize,
   ZCTUpdateProduct,
   ZCTUpdateProductVariant,
 } from './product.schema';
@@ -54,76 +52,6 @@ export class ProductService {
     } catch {
       // Ignore cache failure gracefully
     }
-  }
-
-  // --- Size Methods ---
-  async createSize(data: ZCTSize) {
-    const existing = await this.prisma.size.findFirst({
-      where: { OR: [{ name: data.name }, { code: data.code }] },
-    });
-    if (existing) {
-      throw new AppError('Size with this name or code already exists', 409);
-    }
-    const size = await this.prisma.size.create({ data });
-    await this.redis.del('sizes:all').catch(() => null);
-    return size;
-  }
-
-  async getAllSizes() {
-    const cacheKey = 'sizes:all';
-    try {
-      const cached = await this.redis.get(cacheKey);
-      if (cached) return JSON.parse(cached);
-    } catch {
-      // Fallthrough to DB
-    }
-
-    const sizes = await this.prisma.size.findMany({
-      orderBy: { sortOrder: 'asc' },
-    });
-
-    await this.redis
-      .set(cacheKey, JSON.stringify(sizes), 'EX', 1800)
-      .catch(() => null);
-    return sizes;
-  }
-
-  // --- Color Methods ---
-  async createColor(data: ZCTColor) {
-    const slug = data.slug || this.generateSlug(data.name);
-    const existing = await this.prisma.color.findUnique({ where: { slug } });
-    if (existing) {
-      throw new AppError(`Color with slug '${slug}' already exists`, 409);
-    }
-    const color = await this.prisma.color.create({
-      data: {
-        name: data.name,
-        slug,
-        hex: data.hex ?? null,
-        isActive: data.isActive ?? true,
-      },
-    });
-    await this.redis.del('colors:all').catch(() => null);
-    return color;
-  }
-
-  async getAllColors() {
-    const cacheKey = 'colors:all';
-    try {
-      const cached = await this.redis.get(cacheKey);
-      if (cached) return JSON.parse(cached);
-    } catch {
-      // Fallthrough to DB
-    }
-
-    const colors = await this.prisma.color.findMany({
-      orderBy: { name: 'asc' },
-    });
-
-    await this.redis
-      .set(cacheKey, JSON.stringify(colors), 'EX', 1800)
-      .catch(() => null);
-    return colors;
   }
 
   // --- Product Methods ---
