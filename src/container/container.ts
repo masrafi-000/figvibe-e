@@ -12,6 +12,8 @@ import { BrandService } from '../modules/brand/brand.service';
 import { CartController } from '../modules/cart/cart.controller';
 import { CartRouter } from '../modules/cart/cart.route';
 import { CartService } from '../modules/cart/cart.service';
+import { OrderController } from '../modules/order/order.controller';
+import { OrderService } from '../modules/order/order.service';
 import { CategoryController } from '../modules/category/category.controller';
 import { CategoryRouter } from '../modules/category/category.route';
 import { CategoryService } from '../modules/category/category.service';
@@ -32,6 +34,7 @@ import { SizeService } from '../modules/size/size.service';
 import { UserController } from '../modules/user/user.controller';
 import { UserRouter } from '../modules/user/user.route';
 import { UserService } from '../modules/user/user.service';
+import { OrderRouter } from '../modules/order/order.route';
 
 // Database connection
 const database = new Database();
@@ -96,6 +99,11 @@ const cartService = new CartService(database);
 const cartController = new CartController(cartService, auditService);
 const cartRouter = new CartRouter(cartController);
 
+// Order module
+const orderService = new OrderService(database);
+const orderController = new OrderController(orderService, auditService);
+const orderRouter = new OrderRouter(orderController);
+
 // Export container
 export const container = {
   database,
@@ -131,4 +139,7 @@ export const container = {
   cartRouter,
   cartService,
   cartController,
+  orderRouter,
+  orderService,
+  orderController,
 };

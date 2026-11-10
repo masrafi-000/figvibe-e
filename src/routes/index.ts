@@ -13,5 +13,6 @@ router.use('/sizes', container.sizeRouter.router);
 router.use('/colors', container.colorRouter.router);
 router.use('/products', container.productRouter.router);
 router.use('/cart', container.cartRouter.router);
+router.use('/orders', container.orderRouter.router);
 
 export { router as apiRouter };
