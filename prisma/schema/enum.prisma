@@ -44,11 +44,26 @@ enum OrderStatus {
 }
 
 enum PaymentMethod {
+  CASH
+  CARD
   COD
   STRIPE
   BKASH
   NAGAD
+  ROCKET
+  BANK_TRANSFER
   SSL_COMMERZ
+}
+
+
+enum OrderChannel {
+  ONLINE
+  POS
+}
+
+enum DeliveryType {
+  STORE_PICKUP
+  HOME_DELIVERY
 }
 
 enum PaymentStatus {

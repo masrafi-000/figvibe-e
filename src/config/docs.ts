@@ -9,6 +9,7 @@ import { registerAuthDocs } from '../modules/auth/auth.docs';
 import { registerCartDocs } from '../modules/cart/cart.docs';
 import { registerHealthDocs } from '../modules/health/health.docs';
 import { registerOrderDocs } from '../modules/order/order.docs';
+import { registerPosDocs } from '../modules/pos/pos.docs';
 import { registerUserDocs } from '../modules/user/user.docs';
 
 extendZodWithOpenApi(z);
@@ -31,6 +32,7 @@ const initDocs = () => {
   registerUserDocs(registry);
   registerCartDocs(registry);
   registerOrderDocs(registry);
+  registerPosDocs(registry);
   docsInitialized = true;
 };
 
@@ -71,6 +73,11 @@ export const generateOpenAPIDocument = () => {
         name: 'Orders',
         description:
           'Customer order placement, checkout, status transitions, and address management',
+      },
+      {
+        name: 'POS & Physical Store Sales',
+        description:
+          'In-store order creation, cash/digital payments, salesman tracking, and store delivery',
       },
     ],
   });

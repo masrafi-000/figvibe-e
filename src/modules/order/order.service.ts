@@ -28,6 +28,16 @@ export const orderInclude = {
   },
   payment: true,
   shippingAddress: true,
+  salesman: {
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      username: true,
+      phone: true,
+    },
+  },
   user: {
     select: {
       id: true,

@@ -1,9 +1,17 @@
 model Order {
   id String @id @default(cuid())
-
   orderNumber String @unique
-
   status OrderStatus @default(PENDING)
+
+  channel OrderChannel @default(ONLINE)
+  deliveryType DeliveryType @default(HOME_DELIVERY)
+
+  salesmanId String?
+  salesman User? @relation("SalesmanOrder", fields: [salesmanId], references: [id], onDelete: SetNull)
+
+  customerName String?
+  customerPhone String?
+  customerEmail String?
 
   subtotal    Decimal @db.Decimal(12, 2)
   discount    Decimal @default(0) @db.Decimal(12, 2)
@@ -27,6 +35,9 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+
+  @@index([salesmanId])
+  @@index([channel])
   @@index([userId])
   @@index([status])
   @@index([createdAt])

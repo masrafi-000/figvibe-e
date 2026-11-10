@@ -14,5 +14,6 @@ router.use('/colors', container.colorRouter.router);
 router.use('/products', container.productRouter.router);
 router.use('/cart', container.cartRouter.router);
 router.use('/orders', container.orderRouter.router);
+router.use('/pos', container.posRouter.router);
 
 export { router as apiRouter };

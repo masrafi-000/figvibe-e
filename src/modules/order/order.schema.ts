@@ -13,10 +13,14 @@ export const OrderStatusEnum = z.enum([
 ]);
 
 export const PaymentMethodEnum = z.enum([
+  'CASH',
+  'CARD',
   'COD',
   'STRIPE',
   'BKASH',
   'NAGAD',
+  'ROCKET',
+  'BANK_TRANSFER',
   'SSL_COMMERZ',
 ]);
 

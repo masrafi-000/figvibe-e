@@ -35,6 +35,9 @@ import { UserController } from '../modules/user/user.controller';
 import { UserRouter } from '../modules/user/user.route';
 import { UserService } from '../modules/user/user.service';
 import { OrderRouter } from '../modules/order/order.route';
+import { PosController } from '../modules/pos/pos.controller';
+import { PosRouter } from '../modules/pos/pos.route';
+import { PosService } from '../modules/pos/pos.service';
 
 // Database connection
 const database = new Database();
@@ -104,6 +107,11 @@ const orderService = new OrderService(database);
 const orderController = new OrderController(orderService, auditService);
 const orderRouter = new OrderRouter(orderController);
 
+// POS module
+const posService = new PosService(database);
+const posController = new PosController(posService, auditService);
+const posRouter = new PosRouter(posController);
+
 // Export container
 export const container = {
   database,
@@ -142,4 +150,7 @@ export const container = {
   orderRouter,
   orderService,
   orderController,
+  posRouter,
+  posService,
+  posController,
 };

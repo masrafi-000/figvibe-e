@@ -45,4 +45,3 @@ export class OrderRouter {
     this.router.post('/:id/cancel', this.controller.cancelOrder);
   }
 }
-

@@ -17,7 +17,11 @@ model User {
   role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
   status UserStatus @default(ACTIVE)
 
+  
+  // Salesman related
+  soldOrders Order[] @relation("SalesmanOrder")
 
+  
   accounts Account[]
   sessions AuthSession[]
 
