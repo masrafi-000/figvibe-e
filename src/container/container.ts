@@ -9,6 +9,9 @@ import { AuthService } from '../modules/auth/auth.service';
 import { BrandController } from '../modules/brand/brand.controller';
 import { BrandRouter } from '../modules/brand/brand.route';
 import { BrandService } from '../modules/brand/brand.service';
+import { CartController } from '../modules/cart/cart.controller';
+import { CartRouter } from '../modules/cart/cart.route';
+import { CartService } from '../modules/cart/cart.service';
 import { CategoryController } from '../modules/category/category.controller';
 import { CategoryRouter } from '../modules/category/category.route';
 import { CategoryService } from '../modules/category/category.service';
@@ -88,6 +91,11 @@ const productService = new ProductService(database, redis);
 const productController = new ProductController(productService, auditService);
 const productRouter = new ProductRouter(productController);
 
+// Cart module
+const cartService = new CartService(database);
+const cartController = new CartController(cartService, auditService);
+const cartRouter = new CartRouter(cartController);
+
 // Export container
 export const container = {
   database,
@@ -120,4 +128,7 @@ export const container = {
   productRouter,
   productService,
   productController,
+  cartRouter,
+  cartService,
+  cartController,
 };

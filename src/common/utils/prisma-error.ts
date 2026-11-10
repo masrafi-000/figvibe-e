@@ -66,3 +66,28 @@ export function catchPrismaUniqueError(
     throw new AppError(`${entityName} with this ${target} already exists`, 409);
   }
 }
+
+/**
+ * Type guard to check if an error is a Prisma Transaction Conflict or Deadlock (P2034)
+ * or PostgreSQL serialization failure (40001 / deadlock).
+ */
+export function isPrismaTransactionConflictError(error: unknown): boolean {
+  if (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === 'P2034'
+  ) {
+    return true;
+  }
+
+  if (
+    error instanceof Error &&
+    (error.message.includes('could not serialize access') ||
+      error.message.includes('deadlock detected') ||
+      (error as any).code === '40001' ||
+      (error as any).code === '40P01')
+  ) {
+    return true;
+  }
+
+  return false;
+}
