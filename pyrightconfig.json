@@ -1,0 +1,8 @@
+{
+  "exclude": [
+    ".agents/workflows",
+    "node_modules",
+    "dist"
+  ]
+}
+

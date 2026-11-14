@@ -1,0 +1,12 @@
+{
+  "python.analysis.exclude": [
+    "**/.agents/workflows/**"
+  ],
+  "python.analysis.ignore": [
+    "**/.agents/workflows/**"
+  ],
+  "python.linting.ignorePatterns": [
+    "**/.agents/workflows/**"
+  ]
+}
+
